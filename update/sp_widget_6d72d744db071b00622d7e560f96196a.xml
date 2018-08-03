@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function() {
+	/* widget controller */
+	var c = this;
+
+	//Top Apps
+	new Highcharts.Chart({  
+		chart: {
+			renderTo: 'top_apps_pa',
+			type: 'column'
+		},
+		credits: {
+			enabled: false
+		},
+		title: {
+			text: c.data.timeStamp + ' Top 10 Applications by Access Count'
+		},
+		subtitle: {
+			text: ''
+		},
+		xAxis: {
+			type: 'category'
+		},
+		yAxis: [{
+			title: {
+				text: 'Count of Access'
+			},
+			maxPadding:0.2
+		}],
+		legend: {
+			enable: false
+		},
+		plotOptions: {
+			series: {
+				borderWidth: 0
+			}
+		},
+		tooltip:{
+			headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+			 pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b><br/>'
+		},
+		series: c.data.series,
+		drilldown:c.data.drilldown
+	});	
+	
+	c.printDiv = function(divID){
+		window.print();
+		var printContents = document.getElementById(divID).innerHTML;
+		var originalContents = document.body.innerHTML;
+		document.body.innerHTML = printContents;
+		window.print();
+		document.body.innerHTML = originalContents;
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>phil_graph_print_test</id>
+        <internal>false</internal>
+        <link/>
+        <name>phil_graph_print_test</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	/* populate the 'data' object */
+	/* e.g., data.table = $sp.getValue('table'); */
+	
+	// user this table:  ua_app_usage
+	
+	// timeStamp for query
+	data.timeStamp = '2018-06';
+	
+	
+	// xAxis categories
+	data.users=[];
+	
+	// Hichart series
+	data.series = [{
+		name: "Top 10 Applications",
+		colorByPoint: true,
+		showInLegend: false,
+		data: [], 
+		pointPadding: 0.1,
+		pointPlacement: 0
+	}];
+	
+	// Hichart drilldown
+	data.drilldown={
+		series:[]
+	};
+		
+		
+	var gaUsers = new GlideAggregate('ua_app_usage');
+	gaUsers.addEncodedQuery('app_idSTARTSWITHx_depar^time_stamp='+data.timeStamp);
+	gaUsers.groupBy('app_name')
+	gaUsers.addAggregate('SUM','access_count');
+	gaUsers.orderByAggregate('SUM','access_count');
+	gaUsers.query();
+	var topTenFlag = 1;
+	while(gaUsers.next()&&topTenFlag<11){
+		
+		// get seriesData
+		var sum = gaUsers.getAggregate('SUM','access_count');
+		var seriesData = {
+				y:+sum,
+				name:	""+gaUsers.app_name,
+				drilldown:""+gaUsers.app_name
+		}
+		data.series[0].data.push(seriesData);
+		
+		// get drilldownData
+		var gr = new GlideRecord('ua_app_usage');
+		gr.addEncodedQuery('app_idSTARTSWITHx_depar^time_stamp='+data.timeStamp+"^app_name="+gaUsers.getValue('app_name'));
+		gr.query()
+		
+		var drilldownSeries = {
+			name:""+gaUsers.app_name,
+			id:""+gaUsers.app_name,
+			data:[]
+		}
+		
+		while(gr.next()){
+			if(+gr.access_count===0){
+				continue;
+			}
+			drilldownSeries.data.push([""+gr.user.name,+gr.access_count])
+		}
+		data.drilldown.series.push(drilldownSeries)
+		
+		topTenFlag++;
+	}
+	
+		
+	
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>phil.feng</sys_created_by>
+        <sys_created_on>2018-06-27 16:52:54</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>6d72d744db071b00622d7e560f96196a</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>phil_graph_print_test</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_update_name>sp_widget_6d72d744db071b00622d7e560f96196a</sys_update_name>
+        <sys_updated_by>phil.feng</sys_updated_by>
+        <sys_updated_on>2018-06-27 17:18:14</sys_updated_on>
+        <template><![CDATA[<h1>
+ Top Applications <small>{{data.office.toUpperCase()}}</small>
+</h1>
+
+<div class="container-fluid">
+
+  <div class="row" >
+    <div class="col-lg-6 col-md-6">
+      <div id="top_apps_pa" style="height: 400px; margin: 0 auto"></div>
+    </div>
+    <br><br>
+  </div>
+  
+  <div>
+    <a href="#"   ng-click="c.printDiv('top_apps_pa')"> 
+  		<span class="glyphicon glyphicon-print"></span> Print
+    </a>
+  </div>
+</div>
+
+]]></template>
+    </sp_widget>
+</record_update>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="m2m_sp_widget_dependency">
+    <m2m_sp_widget_dependency action="INSERT_OR_UPDATE">
+        <sp_dependency display_value="HighCharts v5">29bfb6d9dbe37600622d7e560f961979</sp_dependency>
+        <sp_widget display_value="phil_graph_print_test">6d72d744db071b00622d7e560f96196a</sp_widget>
+        <sys_class_name>m2m_sp_widget_dependency</sys_class_name>
+        <sys_created_by>phil.feng</sys_created_by>
+        <sys_created_on>2018-06-27 16:52:54</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>b172d744db071b00622d7e560f96196d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>HighCharts v5.phil_graph_print_test</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_update_name>m2m_sp_widget_dependency_b172d744db071b00622d7e560f96196d</sys_update_name>
+        <sys_updated_by>phil.feng</sys_updated_by>
+        <sys_updated_on>2018-06-27 16:52:54</sys_updated_on>
+    </m2m_sp_widget_dependency>
+</record_update>

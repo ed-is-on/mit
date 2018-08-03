@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_angular_provider">
+    <sp_angular_provider action="INSERT_OR_UPDATE">
+        <name>stateFactsRetrieverService</name>
+        <script><![CDATA[function stateFactsRetrieverService($http, $q) {
+
+	// ---------------------------------
+	// -------- Google Version --------
+  var googleApiKey = 'AIzaSyBSmSrpn-paoik062x8mkVmZMBQgiGmHQw';  // Using my personal acct for now!!
+
+  this.govQuery = function(state) {  // Expects state 2-Letter code in ALL CAPS, e.g., CA
+	  var deferred = $q.defer();
+    var ocdid = encodeURIComponent("ocd-division/country:us/state:" + state.toLowerCase());
+	  $http({
+      method: 'GET',
+      url: 'https://www.googleapis.com/civicinfo/v2/representatives/' + ocdid + '?key=' + googleApiKey
+    })
+    .success(function(response) { // on success
+			// Transpose the results
+			var blob = {};
+
+			for (var x in response.offices) {  // Loop through offices				
+				if (response.offices[x].officialIndices.length > 1) {
+					var officename = response.offices[x].name;
+					blob[officename] = [];
+					for (var y in response.offices[x].officialIndices) { // Loop through officials
+						blob[officename].push(response.officials[y]);
+					}  // end for officers
+				} else {
+					blob[response.offices[x].name] = response.officials[response.offices[x].officialIndices[0]];
+				}  // if #officers > 1
+
+			}  // end for offices
+			// End Transposing offices
+
+      deferred.resolve(blob);
+		})
+    .error(function(response) {
+      deferred.reject(response);
+    }); // end $HTTP GET
+
+		return deferred.promise;
+  };  // govQuery
+
+
+
+
+	// ------------------------------------
+	// -------- Wikipedia Version --------
+
+	this.wikiGovQuery = function(stateName) {  // Expects State Name, e.g., California
+		var deferred = $q.defer();
+		var responseJSON = {};
+		var flagName;
+		var data1, data2, data3;  // Keeping track of the 3 types of formats we are checking
+
+		// Workaround; in Wikipedia, some states don't follow the conventions...
+		switch (stateName) {
+			case 'District of Columbia':
+				stateName = 'Washington, D.C.';
+				break;
+				
+			case 'US Virgin Islands':
+				stateName = 'United States Virgin Islands';
+				break;
+
+			case 'Georgia':
+				stateName = 'Georgia_(U.S._state)';
+				break;
+		} // end switch
+
+
+		/*  // This gets around CORS, but doesn't parse the response. Use wtf_wikipedia as below instead.
+		fetch('https://en.wikipedia.org/w/api.php?format=json&action=parse&origin=*&prop=wikitext&page=' + stateName)
+		.then(function(res) {
+			res.json()
+			.then(function(s) {
+				var text = s.parse.wikitext['*'];
+				deferred.resolve(responseJSON);
+			})
+		});  // fetch
+		*/
+
+
+		// $HTTP uses OPTION, which is not supported by Wikipedia API... in fact, use wtf_wikipedia to parse
+		// -------- First, get the Wikipedia Page for the state --------
+		wtf.fetch(stateName, 'en', function(err, doc) {
+			if (err) {
+				console.log('ERROR with FETCH: ' + err);
+				deferred.reject(err);
+			}
+
+			//-------- lots of Wiki pages are not formatted right; try a few --------
+			try {  // Try 1; Most likely to work
+				data1 = doc.infobox(0).data;
+				flagName = data1.flag.data.text;  // use this below
+
+				responseJSON = {
+					'Governor'        : data1.governor.data.text || '',
+					'Lt Governor'     : data1['lieutenant governor'].data.text || '',
+					'Senators'        : data1.senators.data.text, //.replace(/(↵|\\n)/g, ', ') || '',
+					'Representatives' : data1.representative.data.text || '',
+					'Capital'         : data1.capital.data.text || ''
+				}  // responseJSON
+
+			} catch (e) {  // Catching Try 1
+				console.log('Fell out of Format 1, about to try Format 2: ', e)
+
+				try {  // Try 2
+					data2 = doc.infoboxes(0).data;
+					
+					if (data2.leader_title && data2.leader_name) {
+						responseJSON[data2.leader_title.data.text] = data2.leader_name.data.text;
+					}
+					if (data2.leader_title1 && data2.leader_title1) {
+						responseJSON[data2.leader_title1.data.text] = data2.leader_name1.data.text;
+					}
+					if (data2.leader_title2 && data2.leader_title2) {
+						responseJSON[data2.leader_title2.data.text] = data2.leader_name2.data.text;
+					}
+					if (data2.image_flag) {
+						flagName = data2.image_flag.data.text;
+					}
+
+				} catch (ee) {  // Catching Try 2
+					console.log('Fell out of Format 2, about to try Format 3: ', ee)
+
+					try {  // Try 3
+						data3 = doc.sections(0).lists();
+
+						for (var level1 in data3) {  // multiple layers of CRAP to dig through...
+							for (var level2 in data3[level1]) {
+
+								try {  // The actual Match; need this or null values will blow up.
+									var matches = data3[level1][level2].data.text.match(/^(.+\S)(\s*\=\s*)(.*)$/);
+
+									if (['Governor', 'Lieutenant Governor', 'Senator', 'Senators', 'Representative', 'Representatives', 'Capital'].includes(matches[1])) {
+										responseJSON[matches[1]] = matches[3];
+									}
+
+									if (matches[1] == 'Flag') {
+										flagName = matches[3];
+									}  // if Flag
+								} catch (me) {  // Catching Match
+									console.log('No match for: ' + data3[level1][level2].data.text)  // log, but continue
+								}  // Catch Match
+							}  // level 2
+						}  // level 1
+						//console.log(responseJSON)
+
+					} catch (eee) {  // Catching Try 3
+						deferred.reject('Failed all attempts to parse Wiki: ' + eee);
+					}  // Catch 3
+				}  // Catch 2
+			}  // Catch 1
+
+			// -------- Now get the Flag --------
+			if (flagName) {
+				fetch('https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&prop=imageinfo&iiprop=url&titles=File:' + flagName)
+				.then(function(res) {
+					res.json()
+					.then(function(s) {
+						var flagUrl = s.query.pages["-1"].imageinfo[0].url;  // May not work for all images
+
+						// Do some basic validation on the flagURL...
+						if (flagUrl.match(/^https:\/\/upload.wikimedia.org\//)) {
+							responseJSON["Flag"] = flagUrl;
+						}
+
+						deferred.resolve(responseJSON);
+					},  // parse json response from fetch
+					function(err) {
+						console.log (err)
+						deferred.reject(err);
+					})  // handler for res.json
+				});  // handler for flag fetch
+			} else {  // No flag
+				deferred.resolve(responseJSON);
+			} // if there is a flag
+
+		});  // wtf.fetch
+
+		return deferred.promise;
+	};  // wikiGovQuery
+
+}]]></script>
+        <sys_class_name>sp_angular_provider</sys_class_name>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-05-24 15:55:11</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>c6fe3fc5db5a1700622d7e560f96195c</sys_id>
+        <sys_mod_count>259</sys_mod_count>
+        <sys_name>stateFactsRetrieverService</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_update_name>sp_angular_provider_c6fe3fc5db5a1700622d7e560f96195c</sys_update_name>
+        <sys_updated_by>Steve.Vong</sys_updated_by>
+        <sys_updated_on>2018-08-02 20:06:23</sys_updated_on>
+        <type>service</type>
+    </sp_angular_provider>
+</record_update>

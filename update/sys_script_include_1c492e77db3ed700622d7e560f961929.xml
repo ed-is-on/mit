@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_depar_mit.getFactsService</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>getFactsService</name>
+        <script><![CDATA[var getFactsService = Class.create();
+getFactsService.prototype = {
+    initialize: function() {
+    },
+
+	errFactsRetrieval: function(state) {
+		var dt = new Date();
+
+		//data.entity = [];
+		entityObj={};
+
+		var appl = new GlideRecord ('x_depar_err_self_s_application');
+		appl.addQuery('cfda_num','027');
+		appl.addQuery('sub_prgm_cd','A');
+		appl.addQuery('sub_prgm_fy', dt.getFullYear().toString());
+		appl.addQuery('applicant_state',state);
+		appl.addQuery('applicant_name','!=','BUREAU OF INDIAN EDUCATION');
+		appl.orderBy('applicant_state');
+		appl.query();
+		while (appl.next()){
+			entityObj={};
+			entityObj.duns = appl.recipient_duns.getDisplayValue();
+			entityObj.state = appl.applicant_state.getDisplayValue();
+
+			var entity = new GlideRecord ('x_depar_err_self_s_entity');
+			entity.addQuery('duns',entityObj.duns);
+			entity.query();
+			if (entity.next()) {
+				var adminColor = entity.asd_total_sc_cc.getDisplayValue();
+				if (adminColor == 'G') 
+				{adminColor = 'Low';}
+				else
+					if (adminColor == 'Y') {adminColor = 'Medium';}
+				else
+					if (adminColor == 'R') {adminColor = 'High';}
+
+				entityObj.admScore = adminColor +' ('+entity.asd_total_sc.getDisplayValue() + ')';
+
+				var finColor = entity.fsd_total_sc_cc.getDisplayValue();
+				if (finColor == 'G') {finColor = 'Low';}
+				else
+					if (finColor == 'Y') {finColor = 'Medium';}
+				else
+					if (finColor == 'R') {finColor = 'High';}
+
+				entityObj.finScore = finColor +' ('+entity.fsd_total_sc.getDisplayValue() + ')';
+
+				var intColor = entity.fac_total_sc_cc.getDisplayValue();
+				if (intColor == 'G') {intColor = 'Low';}
+				else
+					if (intColor == 'Y') {intColor = 'Medium';}
+				else
+					if (intColor == 'R') {intColor = 'High';}
+
+
+				entityObj.intScore = intColor +' ('+entity.fac_total_sc.getDisplayValue() + ')';
+				entityObj.dbKey = entity.dbkey.getDisplayValue();
+
+			}
+
+			// Grab the Audit info based on DBKEY //
+			var label1 = ''; // Opinion on Financial Statements, Current Year//
+			var label2 = ''; // Opinion on Financial Statements, previous 4 audits//
+			var label3 = ''; // Opinion on Major Programs, Current Year//
+			var label4 = ''; // Opinion on Major Programs, previous 4 audits //
+			var label5 = ''; // Program Findings, most recent year//
+			var label6 = ''; // Program Findings, previous 4 audits //
+
+			var grOpp = new GlideAggregate('x_depar_err_self_s_audit');
+			grOpp.addQuery('dbkey',entityObj.dbKey);
+			grOpp.query();
+			if (grOpp.next()) {
+
+				// grab the values that comprise the current year opinion on financial statements //
+
+				var unqual_mr = grOpp.fac_mr_fs_unqualified.getDisplayValue();
+				var qual_mr = grOpp.fac_mr_fs_qualified.getDisplayValue();
+				var adv_mr = grOpp.fac_mr_fs_adverse.getDisplayValue();
+				var dis_mr = grOpp.fac_mr_fs_disclaimed.getDisplayValue();
+
+				if (qual_mr == 'N' && adv_mr == 'N' && dis_mr == 'N') {
+					label1 = 'The State of '+ entityObj.state + ' received an   <b>unmodified opinion</b> on its Financial Statements for the current audit.  ';
+				}
+				else {
+					label1 = 'The State of ' +entityObj.state + ' received  <font color="red"><b>modified opinions</b></font> on its Financial Statements for the current audit.  ';
+					if (qual_mr == 'Y') {
+						label1 = label1 + '(Qualified';
+						if (adv_mr == 'Y') {label1 = label1 + ', Adverse';}
+						if (dis_mr == 'Y') {label1 = label1 + ', Disclaimed';}
+						label1 = label1 + ').  ';
+					}
+					else if (adv_mr == 'Y') {
+						label1 = label1 + '(Adverse';
+						if (qual_mr == 'Y') {label1 = label1 + ', Qualified';}
+						if (dis_mr == 'Y') {label1 = label1 + ', Disclaimed';}
+						label1 = label1 + ').  ';
+
+					}
+
+					else if (dis_mr == 'Y'){
+						label1 = label1 + '(Disclaimed';
+						if (adv_mr == 'Y') {label1 = label1 + ', Adverse';}
+						if (qual_mr == 'Y') {label1 = label1 + ', Qualified';}
+						label1 = label1 + ').  ';
+					}
+				}
+
+
+				// Grab the values for the previous 4yr audit opinions on financial statements
+
+				var unqual_4yr = grOpp.fac_4yr_fs_unqualified.getDisplayValue();
+				var qual_4yr = grOpp.fac_4yr_fs_qualified.getDisplayValue();
+				var adv_4yr = grOpp.fac_4yr_fs_adverse.getDisplayValue();
+				var dis_4yr = grOpp.fac_4yr_fs_disclaimed.getDisplayValue();
+
+				if (qual_4yr == 'N' && adv_4yr == 'N' && dis_4yr == 'N') {
+						label2 = 'It also received an <b>unmodified opinion</b> on its Financial Statements for the past 4 audits.  ';
+				}
+				else {
+					label2 = 'It also received <font color="red"><b>modified opinions</b></font> on its Financial Statements for one or more of the previous 4 audits.  ';
+					if (qual_4yr == 'Y') {
+						label2 =label2 + ' (Qualified';
+					  if (adv_4yr == 'Y') {label2 = label2 + ', Adverse';}
+					  if (dis_4yr == 'Y') {label2 = label2 + ', Disclaimed';}
+						label2 = label2 + ').  ';
+					}
+					else if (adv_4yr == 'Y') {
+						label2 = label2 +' (Adverse';
+					  if (qual_4yr == 'Y') {label2 = label2 + ', Qualified';}
+					  if (dis_4yr == 'Y') {label2 = label2 + ', Disclaimed';}
+						label2 = label2 + ').  ';
+
+					}
+
+					else if (dis_4yr == 'Y'){
+						label2 = label2 + ' (Disclaimed';
+					  if (adv_4yr == 'Y') {label2 = label2 + ', Adverse';}
+					  if (qual_4yr == 'Y') {label2 = label2 + ', Qualified';}
+						label2 = label2 + ').  ';
+					}
+				}
+
+
+				// Grab the Opinion of ED Major Program Compliance , most recent audit
+
+
+				unqual_mr = grOpp.fac_mr_mp_unqualified.getDisplayValue();
+				qual_mr = grOpp.fac_mr_mp_qualified.getDisplayValue();
+				adv_mr = grOpp.fac_mr_mp_adverse.getDisplayValue();
+				dis_mr = grOpp.fac_mr_mp_disclaimed.getDisplayValue();
+
+				if (qual_mr == 'N' && adv_mr == 'N' && dis_mr == 'N') {
+					label3 =  'For its most recent audit, the State received an <b>unmodified opinion</b> on its compliance of Major Programs.  ';
+				}
+				else {
+					label3 = 'For its most recent audit, the State received a <font color="red"><b>modified opinion</b></font> on its compliance of Major Programs.  ';
+					if (qual_mr == 'Y') {
+						label3 = label3 + ' (Qualified';
+					  if (adv_mr == 'Y') {label3 = label3 + ', Adverse';}
+					  if (dis_mr == 'Y') {label3 = label3 + ', Disclaimed';}
+						label3 = label3 + ').  ';
+
+					}
+					else if (adv_mr == 'Y') {
+						label3 =label3 + ' (Adverse';
+					  if (qual_mr == 'Y') {label3 = label3 + ', Qualified';}
+					  if (dis_mr == 'Y') {label3 = label3 + ', Disclaimed';}
+						label3 = label3 + ').  ';
+
+					}
+
+					else if (dis_mr == 'Y'){
+						label3 = label3 + ' (Disclaimed';
+					  if (adv_mr == 'Y') {label3 = label3 + ', Adverse';}
+					  if (qual_mr == 'Y') {label3 = label3 + ', Qualified';}
+						label3 = label3 + ').  ';
+
+					}
+
+				}
+
+
+				// Grab the results of the 4yr Audit, Major Programs
+				value4yr = '';
+
+				unqual_4yr = grOpp.fac_4yr_mp_unqualified.getDisplayValue();
+				qual_4yr = grOpp.fac_4yr_mp_qualified.getDisplayValue();
+				adv_4yr = grOpp.fac_4yr_mp_adverse.getDisplayValue();
+				dis_4yr = grOpp.fac_4yr_mp_disclaimed.getDisplayValue();
+
+				if (qual_4yr == 'N' && adv_4yr == 'N' && dis_4yr == 'N') {
+					label4 =  'The State received an <b>unmodified opinion</b> on its compliance of Major Programs for the previous 4 audits.  ';
+				}
+				else {
+					label4 = 'The State received <font color="red"><b>modified opinions</b></font> on its compliance of Major Programs for the previous 4 audits.  ';
+					if (qual_4yr == 'Y') {
+						label4 = label4 + ' (Qualified';
+					  if (adv_4yr == 'Y') {label4 = label4 + ', Adverse';}
+					  if (dis_4yr == 'Y') {label4 = label4 + ', Disclaimed';}
+						label4 = label4 + ').  ';
+					}
+					else if (adv_4yr == 'Y') {
+						label4 = label4 + ' (Adverse';
+					  if (qual_4yr == 'Y') {label4 = label4 + ', Qualified';}
+					  if (dis_4yr == 'Y') {label4 = label4 + ', Disclaimed';}
+						label4 = label4 + ').  ';
+
+					}
+
+					else if (dis_4yr == 'Y'){
+						label4 = label4 + ' (Disclaimed';
+					  if (adv_4yr == 'Y') {label4 = label4 + ', Adverse';}
+					  if (qual_4yr == 'Y') {label4 = label4 + ', Qualified';}
+						label4 = label4 + ').  ';
+					}
+				}
+				label4 = label4 + '\n';
+				label5 = '<font color="red"><b>Programmatic Findings</b></font> for the most recent audit were found in the following Compliance Areas: ';
+				label6 = 'During the Previous 4 audits, <font color="red"><b>Programmatic Findings</b></font> were found one or more times in the following Compliance Areas: ';
+
+
+				// Grab the Program Finding Flags
+
+
+				//Allowable Costs
+
+				var val = '';
+				var countCurr = 0;
+				var count4yr = 0;
+				var filler = '';
+				var filler4 = '';
+
+				val = grOpp.fac_mr_findings_b_yn.getDisplayValue();
+				if (val == 'Y') {
+					countCurr = countCurr + 1;
+					label5 = label5 + ' Allowable Costs';}
+
+				val = grOpp.fac_4yr_yrcount_b_yn.getDisplayValue();
+				if (val == 'Y'){
+					count4yr = count4yr + 1;
+					label6 = label6 + 'Allowable Costs';}
+
+
+				//Allowable Activities
+
+				val = grOpp.fac_mr_findings_a_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Allowable Activities';}
+
+				val = grOpp.fac_4yr_yrcount_a_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Allowable Activities';}
+
+				//Cash Management
+
+
+				val = grOpp.fac_mr_findings_c_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Cash Management';}
+
+				val = grOpp.fac_4yr_yrcount_c_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Cash Management';}
+
+
+				//Eligibility
+
+
+				val = grOpp.fac_mr_findings_e_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Eligibility';}
+
+
+				val = grOpp.fac_4yr_yrcount_e_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Eligibility';}
+
+
+				//	Matching, Level of Effort, Earmarking
+
+
+				val = grOpp.fac_mr_findings_g_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Matching/Level of Effort/Earmarking';}
+
+				val = grOpp.fac_4yr_yrcount_g_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Matching/Level of Effort/Earmarking';}
+
+
+				//	Procurement / Suspension and Debarment
+
+
+				val = grOpp.fac_mr_findings_i_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Procurement/Suspension and Debarment';}
+
+
+				val = grOpp.fac_4yr_yrcount_i_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Procurement/Suspension and Debarment';}
+
+
+				//	Equipment and Real Property Management
+
+
+				val = grOpp.fac_mr_findings_f_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Equipment and Real Property Management';}
+
+				val = grOpp.fac_4yr_yrcount_f_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Equipment and Real Property Management';}
+
+
+				//	Period of Availability of Federal Funds
+
+
+				val = grOpp.fac_mr_findings_h_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Period of Availability';}
+
+				val = grOpp.fac_4yr_yrcount_h_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Period of Availability';}
+
+
+				//	Program Income
+
+				val = grOpp.fac_mr_findings_j_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Program Income';}
+
+				val = grOpp.fac_4yr_yrcount_j_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Program Income';}
+
+
+				//	Reporting
+
+				val = grOpp.fac_mr_findings_l_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Reporting';}
+
+				val = grOpp.fac_4yr_yrcount_l_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Reporting';}
+
+
+				//	Special Tests and Provisions
+
+				val = grOpp.fac_mr_findings_n_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Special Tests and Provisions';}
+
+
+				val = grOpp.fac_4yr_yrcount_n_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Special Tests and Provisions';}
+
+
+				//	Subrecipient Monitoring
+
+				val = grOpp.fac_mr_findings_m_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Subrecipient Monitoring';}
+
+				val = grOpp.fac_4yr_yrcount_m_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Subrecipient Monitoring';}
+
+
+				//	Davis-Bacon Act  - NEED TO SHOW MOST RECENT COUNT IF "y"
+
+				val = grOpp.fac_mr_findings_d_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Davis-Bacon Act';}
+
+				value4yr = grOpp.fac_4yr_yrcount_d_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Davis-Bacon Act';}
+
+
+				//	Real Property Acquisition and Relocation Assistance
+
+				val = grOpp.fac_mr_findings_k_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Real Property Acquisition and Relocation Assistance';}
+
+				value4yr = grOpp.fac_4yr_yrcount_k_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Real Property Acquisition and Relocation Assistance';}
+
+				//	Other
+
+				val = grOpp.fac_mr_findings_p_yn.getDisplayValue();
+				if (val == 'Y') {
+				countCurr = countCurr + 1;
+				if (countCurr > 1) {filler = ', ';}
+				label5 = label5 + filler + ' Other';}
+
+
+				val = grOpp.fac_4yr_yrcount_p_yn.getDisplayValue();
+				if (val == 'Y') {
+				count4yr = count4yr + 1;
+				if (count4yr > 1) {filler4 = ', ';}
+				label6 = label6 + filler4 + ' Other';}
+
+				label5 = label5 + '.  ';
+				label6 = label6 + '.';
+				if (countCurr == 0) {label5 = ' <b>There were no Programmatic Findings</b> found during the most recent audit.  ';}
+				if (count4yr == 0) {label6 = ' During the previous 4 Audits, <b>there were no Programmatic Findings.</b>  ';}
+				
+			}
+
+
+
+			entityObj.auditInfo = label1 + label2 + label3 + label4 + label5 + label6;
+			//var myJSON = JSON.stringify(entityObj);
+			return entityObj;
+
+			
+		} // end while
+	},
+
+    type: 'getFactsService'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-06-26 19:16:24</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>1c492e77db3ed700622d7e560f961929</sys_id>
+        <sys_mod_count>27</sys_mod_count>
+        <sys_name>getFactsService</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_update_name>sys_script_include_1c492e77db3ed700622d7e560f961929</sys_update_name>
+        <sys_updated_by>paul.bassett</sys_updated_by>
+        <sys_updated_on>2018-06-27 15:12:26</sys_updated_on>
+    </sys_script_include>
+</record_update>

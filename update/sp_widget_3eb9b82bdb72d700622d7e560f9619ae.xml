@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function($scope, stateFactsRetrieverService, $q, $http, $uibModal, spUtil) {
+	/* widget controller */
+	var c = this;
+
+	// -----------------------------------------------------------------------
+	// Configuration taken from the x_depar_mit_analysis table in SN.
+	// Categories show up based on choices set up in the table, and ordered
+	// as specified in sys_choice.
+	// NB: When modifying or creating new categories, keep the label and
+	//   values identical!
+	// Also note some autoloaded items are hardcoded to specific categories.
+	//   If categories are changed, also change them in code here... look for
+	//   " *** Specific Category *** "
+	// -----------------------------------------------------------------------
+
+	$scope.refresh = function() {
+		$scope.data.action = 'load';
+		$scope.data.analyses = [];  // don't waste effort sending this back; we're reloading
+		c.server.update()
+			.then(function() {
+			$scope.goLookup();
+		});
+	}  // refresh
+
+
+	$scope.goLookup = function() {
+		stateFactsRetrieverService.govQuery($scope.data.state)
+			.then(function(response) {
+			//console.log(JSON.stringify(response,null,2))
+			$scope.data.offices = response;
+		});
+	}  // goLookup
+
+
+
+	// ---------------------------
+	// -------- Add Item --------
+	$scope.addItem = function(catIndex) {
+		$scope.data.newItem = {'state'       : $scope.data.state,
+													 'category'    : $scope.data.analyses[catIndex].category,
+													 'sequence'    : ($scope.data.analyses[catIndex].items.length > 0) ? ($scope.data.analyses[catIndex].items[$scope.data.analyses[catIndex].items.length -1].sequence + 10) : 10,
+													 'item'        : ''
+													};
+		$scope.openAddModal();
+	}  // end addItem
+
+
+	// ----------------------------
+	// -------- Edit Item --------
+	$scope.editItem = function(catIndex, itemIndex) {
+		if ($scope.data.analyses[catIndex].items[itemIndex].sys_id != 'HARDCODED') {  // Can't edit these
+			$scope.data.selectedItem = {catIndex: catIndex, itemIndex: itemIndex};
+			$scope.openEditModal();
+		}  // if not hardcoded
+	}  // end editItem
+
+
+	// ----------------------------------
+	// -------- Open Edit Modal --------
+	$scope.openEditModal = function(){
+		scope.editModalInstance = $uibModal.open({
+			templateUrl: 'editModal',
+			ariaLabelledBy: 'modal-title',
+			ariaDescribedBy: 'modal-body',
+			size: 'md',
+			scope: scope
+		});
+	} // end openEditModal
+
+
+	// ---------------------------------
+	// -------- Open Add Modal --------
+	$scope.openAddModal = function(category){
+		scope.addModalInstance = $uibModal.open({
+			templateUrl: 'addModal',
+			ariaLabelledBy: 'modal-title',
+			ariaDescribedBy: 'modal-body',
+			size: 'md',
+			scope: scope
+		});   
+	} // end openAddModal
+
+
+
+	// -----------------------------
+	// -------- POST Item --------
+	$scope.postItem = function() {
+		$http({
+			method: 'POST',
+			url: '/api/now/table/x_depar_mit_analysis',
+			headers: {'Content-Type' : 'application/json','Accept': 'application/json'},
+			data : { 'state'       : $scope.data.state,
+							'category'    : $scope.data.newItem.category,
+							'sequence'    : $scope.data.newItem.sequence,
+							'item'        : $scope.data.newItem.item
+						 }
+		})
+			.then(function(response) { // on success
+			//console.log(JSON.stringify(response))
+			$scope.addModalInstance.close();
+			for (var cat in $scope.data.analyses) {
+				if ($scope.data.analyses[cat].category == response.data.result.category) {
+					$scope.data.analyses[cat].items.push(response.data.result);
+					break;
+				}  // end if
+			}  // end for
+			spUtil.addInfoMessage("New Analysis Saved.");
+		},
+						function(response) {
+			console.log('ERROR IS ' + JSON.stringify(response));
+			alert('ERROR saving new analysis item; Please check logs.');
+		});
+	}	// end POST item
+
+
+	// -----------------------------
+	// -------- PATCH Item --------
+	$scope.patchItem = function() {
+		$http({
+			method: 'PATCH',
+			url: '/api/now/table/x_depar_mit_analysis/' + $scope.data.analyses[$scope.data.selectedItem.catIndex].items[$scope.data.selectedItem.itemIndex].sys_id,
+			headers: {'Content-Type' : 'application/json','Accept': 'application/json'},
+			data : { "item"  : $scope.data.analyses[$scope.data.selectedItem.catIndex].items[$scope.data.selectedItem.itemIndex].item
+						 }
+		})
+			.then(function(response) { // on success
+			//console.log(response)
+			$scope.editModalInstance.close();
+			spUtil.addInfoMessage("Saved.");
+		},
+						function(response) {
+			console.log('ERROR IS ' + JSON.stringify(response));
+			alert('ERROR updating analysis item; Please check logs.');
+		});
+	}	// end PATCH item
+
+
+	// ------------------------------
+	// -------- DELETE Item --------
+	$scope.deleteItem = function() {
+		var confirmation = confirm("Select OK to *DELETE* this analysis item completely.");
+		if (confirmation) {
+			$http({
+				method: 'DELETE',
+				url: '/api/now/table/x_depar_mit_analysis/' + $scope.data.analyses[$scope.data.selectedItem.catIndex].items[$scope.data.selectedItem.itemIndex].sys_id,
+				headers: {'Content-Type' : 'application/json','Accept': 'application/json'}
+			})
+				.then(function(response) { // on success
+				//console.log(response)
+				$scope.editModalInstance.close();
+				$scope.data.analyses[$scope.data.selectedItem.catIndex].items.splice([$scope.data.selectedItem.itemIndex], 1);  // remove from the array in scope
+				spUtil.addInfoMessage("Deleted.");
+			},
+							function(response) {
+				console.log('ERROR IS ' + JSON.stringify(response));
+				alert('ERROR deleting analysis item; Please check logs.');
+			});
+		}  // end confirmation
+	}	// end DELETE item
+
+
+	// ---------------------------------
+	// -------- First Run Only --------
+	c.print = function(size) {
+		window.print();
+	}
+
+	c.printDiv = function (divName) {
+		var printContents = document.getElementById(divName).innerHTML;
+
+		var originalContents = document.body.innerHTML;
+
+		//document.body.innerHTML = printContents;
+		//document.getElementById("state_info_table").setAttribute("frame", "void");
+		//var sheet = document.createElement('style')
+		//sheet.innerHTML = "table { font-size: 7pt; } table table {border-collapse: collapse; border-style:hidden;} .pull-right{ display: none; color: blue;} .sidenote.text-right{ float:right;}";
+		//document.body.appendChild(sheet);
+		//window.print();
+		
+		var w = window.open(); 
+		var localCSS = '<link href="76f6d06cdb4f1b00622d7e560f96198b.cssdbx" rel="stylesheet" type="text/css"></link>'
+		var bootstrapcss = '<link href="8917d0cf4f5bc600d9246bd18110c75a.cssdbx" rel="stylesheet" type="text/css"></link>';
+		w.document.write(printContents + bootstrapcss + localCSS);  
+
+		//w.print(); 
+    //w.close();
+		
+		//window.print();
+		//document.body.inerHTML = originalContents;
+	
+
+	}
+
+	c.printDivFrame = function(divId) {
+		var printDivCSS = '<link href="myprintstyle.css" rel="stylesheet" type="text/css">';
+
+		var localCSS = '<link href="1f4e33d0db4f1b00622d7e560f9619bd.cssdbx" rel="stylesheet" type="text/css"></link>';
+		var bootstrapcss = '<link href="8917d0cf4f5bc600d9246bd18110c75a.cssdbx" rel="stylesheet" type="text/css"></link>';
+		var bootstrapcssmin = '<link href="d5aec1a8dbd32200664cfd0d0f96190f.cssdbx" rel="stylesheet" type="text/css"></link>';
+
+		window.frames.print_frame.document.body.innerHTML = 
+			localCSS+ bootstrapcss + bootstrapcssmin +document.getElementById(divId).innerHTML;
+		window.frames.print_frame.window.focus();
+		
+		window.frames.print_frame.window.print();
+
+	}
+
+
+
+
+
+}
+
+
+
+
+
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.sidenote {
+  font-size: 0.8em;
+}
+
+  
+  #info-table {
+  	
+  }
+
+
+
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>mit_sra_phil_clone</id>
+        <internal>false</internal>
+        <link/>
+        <name>MIT_SRA_Phil_clone</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+	data.analyses  = [];  // has to be an array to specify category order
+	data.errscores = {};
+	data.states    = [];  // list of available states
+	data.state     = '';  // currently-selected state
+	data.newItem   = {};
+
+	if (input) {
+		data.analyses = input.analyses;
+		data.states   = input.states;
+		data.state    = input.state;
+		data.date = new Date();  // update refresh timestamp
+
+
+		switch (input.action) {
+
+			case 'load':
+				// ------------------------------------------
+				// -------- Get ERR Info First --------
+				var appl = new GlideRecord ('x_depar_err_self_s_application');
+				appl.addQuery('cfda_num','027');
+				appl.addQuery('sub_prgm_cd','A');
+				appl.addQuery('applicant_state', data.state)
+				appl.addQuery('sub_prgm_fy', data.date.getFullYear().toString());
+				appl.addQuery('applicant_name','!=','BUREAU OF INDIAN EDUCATION')
+				appl.query();
+				while (appl.next()){
+					data.errscores.duns = appl.recipient_duns.getDisplayValue();
+
+					var entity = new GlideRecord ('x_depar_err_self_s_entity');
+					entity.addQuery('duns', data.errscores.duns);
+					entity.query();
+					if (entity.next()) {
+						var adminColor = entity.asd_total_sc_cc.getDisplayValue();
+						if (adminColor == 'G') {adminColor = 'Low'}
+						else
+							if (adminColor == 'Y') {adminColor = 'Medium'}
+						else
+							if (adminColor == 'R') {adminColor = 'High'}
+
+						data.errscores.admScore = adminColor +' ('+entity.asd_total_sc.getDisplayValue() + ')';
+
+						var finColor = entity.fsd_total_sc_cc.getDisplayValue();
+						if (finColor == 'G') {finColor = 'Low'}
+						else
+							if (finColor == 'Y') {finColor = 'Medium'}
+						else
+							if (finColor == 'R') {finColor = 'High'}
+
+						data.errscores.finScore = finColor +' ('+entity.fsd_total_sc.getDisplayValue() + ')';
+
+						var intColor = entity.fac_total_sc_cc.getDisplayValue();
+						if (intColor == 'G') {intColor = 'Low'}
+						else
+							if (intColor == 'Y') {intColor = 'Medium'}
+						else
+							if (intColor == 'R') {intColor = 'High'}
+
+						data.errscores.intScore = intColor +' ('+entity.fac_total_sc.getDisplayValue() + ')';
+					} // end if self scored
+				} // end while application
+
+				// -------- END Get ERR Info --------
+				// ------------------------------------------
+
+
+				// -------- Get Categories --------
+				// (ensures cats are there even if empty)
+				var grc = new GlideRecord('sys_choice');
+				grc.addQuery('name', 'x_depar_mit_analysis');
+				grc.addQuery('element', 'category');
+				grc.addActiveQuery();
+				grc.orderBy('sequence');
+				grc.query();
+
+				while (grc.next()) {
+					var currcat = grc.label.getDisplayValue();
+					var tempObj = {category  : currcat,
+											   items     : []
+												};
+
+					// -------- Prefill categories with auto-loaded data --------
+					if (currcat == 'Pertinent ERR Data Detail') {   // *** Specific Category ***
+						var message = '<table class="table-striped col-sm-12"><tr><td><b>DUNS: </b></td><td>' + data.errscores.duns +
+													'</td></tr><tr><td><b>Admin Risk Score: </b></td><td>' + data.errscores.admScore +
+													'</td></tr><tr><td><b>Internal Risk Score: </b></td><td>' + data.errscores.intScore +
+													'</td></tr><tr><td><b>Financial Risk Score: </b></td><td>' + data.errscores.finScore + '</td></tr></table>';
+						
+						tempObj.items.push({ 'sys_id'   : 'HARDCODED',
+															   'sequence' : 0,
+															   'item'     : message
+															 });
+					}
+
+					// -------- Get Analyses for the given Category--------
+					var gr = new GlideRecordSecure('x_depar_mit_analysis');
+					gr.addQuery('state', data.state.toUpperCase());
+					gr.addQuery('category', currcat)
+					gr.orderBy('sequence');
+					gr.query();
+
+					while(gr.next()) {
+						var tempSubObj = {};
+						tempSubObj.sys_id    = gr.sys_id.getDisplayValue();
+						tempSubObj.item      = gr.item.getDisplayValue();
+						tempSubObj.sequence  = gr.getValue('sequence');
+						tempObj.items.push(tempSubObj);
+					}  // end analysis while
+					
+					data.analyses.push(tempObj);
+				}  // end category while
+
+
+				break;
+
+			default:
+				console.log('default?')
+
+		}  // end switch
+
+	} else {  // -------- First Run Only --------
+		
+		// -------- Get States --------
+		var grst = new GlideRecord('sys_choice');
+		grst.addQuery('name', 'x_depar_mit_analysis');
+		grst.addQuery('element', 'state');
+		grst.orderBy('sequence');
+		grst.query();
+
+		while (grst.next()) {
+			var tempObj = {};
+			tempObj.name  = grst.label.getDisplayValue();
+			tempObj.value = grst.value.getDisplayValue();
+			data.states.push(tempObj);
+		}  // end while
+
+	}  // end if input
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>phil.feng</sys_created_by>
+        <sys_created_on>2018-06-25 16:28:38</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>3eb9b82bdb72d700622d7e560f9619ae</sys_id>
+        <sys_mod_count>154</sys_mod_count>
+        <sys_name>MIT_SRA_Phil_clone</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_update_name>sp_widget_3eb9b82bdb72d700622d7e560f9619ae</sys_update_name>
+        <sys_updated_by>phil.feng</sys_updated_by>
+        <sys_updated_on>2018-07-04 04:10:42</sys_updated_on>
+        <template><![CDATA[<div id = "everything">
+  <div class="text-center">
+    <h2>State Risk Analysis for <select ng-init="data.state=''" ng-model="data.state" ng-options="st.value as st.name for st in data.states" ng-change="refresh()"/></h2>
+  </div>
+
+  <div class="col-sm-12" style="margin-bottom:15px;">
+    <span class="col-sm-8">- NOT Subject to FOIA -
+      <!--span class="col-sm-8">STATE:&nbsp;
+<select ng-init="data.state=''" ng-model="data.state" ng-options="st.value as st.name for st in data.states" ng-change="refresh()"/>
+-->
+    </span>
+    <span class="col-sm-4 sidenote text-right">Generated {{data.date | date:'short'}}</span>
+  </div>
+  <div class="col-sm-12" id="info-table">
+    <table class="col-sm-12 table table-bordered">
+      <tr>
+        <td class="col-sm-2" id="state-info">General State Info</td>
+        <td class="col-sm-10">
+          <table class="table table-striped" id="state_info_table">
+            <thead>
+              <tr>
+                <th class="col-sm-6">Office</th>
+                <th class="col-sm-6">Officer(s)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="(office,officer) in data.offices">
+                <td>{{office}} : </td>
+                <td ng-if="officer.length">
+                  <span ng-repeat="officerperson in officer">{{officerperson.name}} ({{officerperson.party}})<br/></span>
+                </td>
+                <td ng-if="!officer.length">
+                  {{officer.name}} ({{officer.party}})
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <tr ng-repeat="analysis in data.analyses">
+        <td>
+          <span>{{analysis.category}}</span>
+          <span class="pull-right">
+            <button class="btn btn-light" aria-label="Add New Item" ng-click="addItem($index)"><strong>+</strong></button>
+          </span>
+        </td>
+        <td>
+          <ul>
+            <li ng-repeat="x in analysis.items | orderBy: x.sequence" ng-bind-html="x.item" ng-click="editItem($parent.$index, $index)">{{x.item}}</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+
+
+  </div>
+  <iframe name="print_frame"  frameborder="0" src="about:blank" style="display: none"></iframe>
+
+  <script type="text/ng-template" id="editModal">
+		<div class="modal-header">
+    	<h3 class="modal-title text-center">Edit Item</h3>
+    </div>
+    <div class="modal-body row">
+      <div class="col-sm-12" style="margin-top:15px; margin-bottom:5px">Category: <strong>{{data.analyses[data.selectedItem.catIndex].category}}</strong></div>
+      <div class="col-sm-12"><textarea rows="3" cols="90%" ng-model="data.analyses[data.selectedItem.catIndex].items[data.selectedItem.itemIndex].item"/></div>
+    </div>
+  	<div class="modal-footer">
+    	<div class="btn-group" role="group" aria-label="Actions">
+	    	<btn class="btn btn-primary" ng-click="patchItem()"> Save </btn>
+        <btn class="btn btn-danger" ng-click="deleteItem()">Delete</btn>
+    </div>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="addModal">
+		<div class="modal-header">
+    	<h3 class="modal-title text-center">Add Item</h3>
+    </div>
+    <div class="modal-body row">
+      <div class="col-sm-12" style="margin-top:15px; margin-bottom:5px">Category: <strong>{{data.newItem.category}}</strong></div>
+      <div class="col-sm-12"><textarea rows="3" cols="90%" ng-model="data.newItem.item"/></div>
+    </div>
+  	<div class="modal-footer">
+    	<btn class="btn btn-primary" ng-click="postItem()">Submit</btn>
+    </div>
+  </script>
+
+</div>
+
+
+
+
+<br><br>
+<a href="#"   ng-click="c.printDivFrame('everything')" style="display: none;"> 
+  <span class="glyphicon glyphicon-print"></span> Print
+</a>
+
+  <a href="#"   ng-click="c.printDiv('everything')"> 
+  <span class="glyphicon glyphicon-print"></span> Print Friendly & PDF
+</a>
+]]></template>
+    </sp_widget>
+</record_update>

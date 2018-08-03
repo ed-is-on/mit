@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="State Risk Analysis" max_length="40" name="x_depar_mit_analysis" type="collection">
+        <element choice="1" label="Category" mandatory="true" max_length="40" name="category" type="string">
+            <choice>
+                <element label="Background" sequence="100" value="Background"/>
+                <element label="Assessment Results" sequence="200" value="Assessment Results"/>
+                <element label="A-133 Audit Analysis" sequence="300" value="A-133 Audit Analysis"/>
+                <element label="OIG &amp; Other Audit Analyses" sequence="400" value="OIG &amp; Other Audit Analyses"/>
+                <element label="Pertinent ERR Data Detail" sequence="500" value="Pertinent ERR Data Detail"/>
+            </choice>
+        </element>
+        <element label="Item" mandatory="true" max_length="1000" name="item" type="string_full_utf8"/>
+        <element label="Sequence" max_length="40" name="sequence" type="integer"/>
+        <element choice="1" label="State" mandatory="true" max_length="40" name="state" type="string">
+            <choice>
+                <element label="Alabama" sequence="10" value="AL"/>
+                <element label="Alaska" sequence="20" value="AK"/>
+                <element label="American Samoa" sequence="30" value="AS"/>
+                <element label="Arkansas" sequence="40" value="AR"/>
+                <element label="California" sequence="50" value="CA"/>
+                <element label="Colorado" sequence="60" value="CO"/>
+                <element label="Connecticut" sequence="70" value="CT"/>
+                <element label="Delaware" sequence="80" value="DE"/>
+                <element label="District of Columbia" sequence="90" value="DC"/>
+                <element label="Florida" sequence="100" value="FL"/>
+                <element label="Georgia" sequence="110" value="GA"/>
+                <element label="Guam" sequence="120" value="GU"/>
+                <element label="Hawaii" sequence="130" value="HI"/>
+                <element label="Idaho" sequence="140" value="ID"/>
+                <element label="Illinois" sequence="150" value="IL"/>
+                <element label="Indiana" sequence="160" value="IN"/>
+                <element label="Iowa" sequence="170" value="IA"/>
+                <element label="Kansas" sequence="180" value="KS"/>
+                <element label="Kentucky" sequence="190" value="KY"/>
+                <element label="Louisiana" sequence="200" value="LA"/>
+                <element label="Maine" sequence="210" value="ME"/>
+                <element label="Maryland" sequence="220" value="MD"/>
+                <element label="Massachusetts" sequence="230" value="MA"/>
+                <element label="Michigan" sequence="240" value="MI"/>
+                <element label="Minnesota" sequence="250" value="MN"/>
+                <element label="Mississippi" sequence="260" value="MS"/>
+                <element label="Missouri" sequence="270" value="MO"/>
+                <element label="Montana" sequence="280" value="MT"/>
+                <element label="Nebraska" sequence="290" value="NE"/>
+                <element label="Nevada" sequence="300" value="NV"/>
+                <element label="New Hampshire" sequence="310" value="NH"/>
+                <element label="New Jersey" sequence="320" value="NJ"/>
+                <element label="New Mexico" sequence="330" value="NM"/>
+                <element label="New York" sequence="340" value="NY"/>
+                <element label="North Carolina" sequence="350" value="NC"/>
+                <element label="North Dakota" sequence="360" value="ND"/>
+                <element label="Northern Mariana Islands" sequence="370" value="MP"/>
+                <element label="Ohio" sequence="380" value="OH"/>
+                <element label="Oklahoma" sequence="390" value="OK"/>
+                <element label="Oregon" sequence="400" value="OR"/>
+                <element label="Pennsylvania" sequence="410" value="PA"/>
+                <element label="Puerto Rico" sequence="420" value="PR"/>
+                <element label="Rhode Island" sequence="430" value="RI"/>
+                <element label="South Carolina" sequence="440" value="SC"/>
+                <element label="South Dakota" sequence="450" value="SD"/>
+                <element label="Tennessee" sequence="460" value="TN"/>
+                <element label="Texas" sequence="470" value="TX"/>
+                <element label="US Virgin Islands" sequence="480" value="VI"/>
+                <element label="Utah" sequence="490" value="UT"/>
+                <element label="Vermont" sequence="500" value="VT"/>
+                <element label="Virginia" sequence="510" value="VA"/>
+                <element label="Washington" sequence="520" value="WA"/>
+                <element label="West Virginia" sequence="530" value="WV"/>
+                <element label="Wisconsin" sequence="540" value="WI"/>
+                <element label="Wyoming" sequence="550" value="WY"/>
+            </choice>
+        </element>
+    </element>
+</database>

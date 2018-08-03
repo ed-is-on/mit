@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_column">
+    <sp_column action="INSERT_OR_UPDATE">
+        <class_name/>
+        <order>1</order>
+        <size>12</size>
+        <size_lg/>
+        <size_sm/>
+        <size_xs/>
+        <sp_row display_value="1">fb6bf967dbf2d700622d7e560f961969</sp_row>
+        <sys_class_name>sp_column</sys_class_name>
+        <sys_created_by>phil.feng</sys_created_by>
+        <sys_created_on>2018-06-25 21:15:42</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>776bf967dbf2d700622d7e560f96196b</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>1</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_update_name>sp_column_776bf967dbf2d700622d7e560f96196b</sys_update_name>
+        <sys_updated_by>phil.feng</sys_updated_by>
+        <sys_updated_on>2018-06-25 21:15:42</sys_updated_on>
+    </sp_column>
+</record_update>

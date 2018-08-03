@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_js_include">
+    <sp_js_include action="INSERT_OR_UPDATE">
+        <display_name>https://unpkg.com/wtf_wikipedia@latest/builds/wtf_wikipedia.min.js</display_name>
+        <source>url</source>
+        <sys_class_name>sp_js_include</sys_class_name>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-07-24 18:30:16</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>3e9be6bcdb6fd300622d7e560f9619f7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>https://unpkg.com/wtf_wikipedia@latest/builds/wtf_wikipedia.min.js</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_ui_script/>
+        <sys_update_name>sp_js_include_3e9be6bcdb6fd300622d7e560f9619f7</sys_update_name>
+        <sys_updated_by>Steve.Vong</sys_updated_by>
+        <sys_updated_on>2018-07-24 18:30:16</sys_updated_on>
+        <url>https://unpkg.com/wtf_wikipedia@latest/builds/wtf_wikipedia.min.js</url>
+    </sp_js_include>
+</record_update>

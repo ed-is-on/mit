@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function($scope, stateFactsRetrieverService, $q, $http, $uibModal, spUtil, $sce) {
+  /* widget controller */
+  var c = this;
+
+	// -----------------------------------------------------------------------
+	// Configuration taken from the x_depar_mit_analysis table in SN.
+	// Categories show up based on choices set up in the table, and ordered
+	// as specified in sys_choice.
+	// NB: When modifying or creating new categories, keep the label and
+	//   values identical!
+	// If categories are changed, also change them in code here... look for
+	//   " *** Specific Category *** "
+	// Autoloaded items are sequenced at -1
+	// Any items saved as JSON will be displayed automatically in a table.
+	// -----------------------------------------------------------------------
+
+
+
+	// -------- Returns the JSON, otherwise false --------
+	function tryParseJSON(jsonString) {
+		//console.log(tryParseJSON('{"x":"y"}'))
+		try {
+			var o = JSON.parse(jsonString);
+			if (o && typeof o === "object") { return o;	}
+		}
+		catch (e) { console.log(e) }
+		return false;
+	}  // tryParseJSON
+
+
+
+	// -------- RELOAD the page when state is selected --------
+	$scope.reload = function() {
+		$scope.data.action = 'load_state';
+		$scope.data.analyses = [];  // don't waste effort sending this back; we're reloading
+		c.server.update()
+		.then(function() {
+			//$scope.goLookup();
+		});
+	}  // reload
+
+
+	// -------- REFRESH the auto-loaded data for current state --------
+	$scope.refresh = function() {
+		$scope.data.action = 'refresh'
+		$scope.data.analyses = [];  // don't waste effort sending this back; we're reloading
+
+		// Look up state background info. Angular service can't be called from the server script...
+		var elementPos = $scope.data.states.map(function(x) {return x.value; }).indexOf($scope.data.state);  // Get the state name
+		stateFactsRetrieverService.wikiGovQuery($scope.data.states[elementPos].name)  // Use Wikipedia
+		//stateFactsRetrieverService.govQuery($scope.data.state)  // Not using the Google service anymore
+		.then(function(response) {
+			//console.log(JSON.stringify(response))
+			$scope.data.offices = response;
+			c.server.update();
+		}, function(err) {
+			console.log('Returned from StateFactsRetrieverService with error: ' + err)
+		})  // stateFactsRetrieverService
+
+	}  // refresh
+
+
+	// -------- Use the Angular Service --------  NOT USED ANYMORE!!!
+	$scope.goLookup = function() {
+		stateFactsRetrieverService.govQuery($scope.data.state)
+		.then(function(response) {
+			//console.log(JSON.stringify(response,null,2))
+			$scope.data.offices = response;
+		});
+	}  // goLookup
+
+
+
+
+	//----------------------------------------
+	//-------- Table Modal Functions --------
+	//----------------------------------------
+
+	// --------------------------------
+	// -------- Add Table Row --------
+	$scope.addTableRow = function(theKey, theValue) {
+		// Clean up 'crap'
+		var cleanKey   = theKey.replace(/[!@#\$%\^\&\*\(\)<\>\?\'\"]/g, '_');
+
+		// Make sure the new key is unique
+		Object.keys($scope.data.analyses[$scope.data.selectedItem.catIndex].items[$scope.data.selectedItem.itemIndex].item).forEach(function(key) {
+			if (theKey == key) {
+				spUtil.addErrorMessage('The Label must be unique.');
+				return;
+			}
+		})  // validate that the key is unique
+
+		$scope.data.analyses[$scope.data.selectedItem.catIndex].items[$scope.data.selectedItem.itemIndex].item[cleanKey] = theValue;
+	}  // addTableRow	
+
+
+	// -----------------------------------
+	// -------- Remove Table Row --------
+	$scope.removeTableRow = function(key, index) {
+		var confirmation = confirm('Remove this row? Remember you must still press SAVE in this popup window to save your changes.');
+		
+		if (confirmation) {
+			delete $scope.data.analyses[$scope.data.selectedItem.catIndex].items[$scope.data.selectedItem.itemIndex].item[key];
+		}
+	}  // removeTableRow	
+
+
+
+
+	//----------------------------------------
+	//-------- Main Page Functions --------
+	//----------------------------------------
+
+	// ---------------------------
+	// -------- Add Item --------
+	$scope.addItem = function(catIndex) {
+		$scope.data.newItem = {'state'       : $scope.data.state,
+													 'category'    : $scope.data.analyses[catIndex].category,
+													 'sequence'    : ($scope.data.analyses[catIndex].items.length > 0) ? ($scope.data.analyses[catIndex].items[$scope.data.analyses[catIndex].items.length -1].sequence + 1) : 10,
+													 'item'        : ''
+													};
+		$scope.openAddModal();
+	}  // end addItem
+
+
+
+	// ----------------------------
+	// -------- Edit Item --------
+	$scope.editItem = function(catIndex, itemIndex) {
+		if ($scope.data.isEditor) {
+			if ($scope.data.analyses[catIndex].items[itemIndex].isJson) {
+				$scope.data.selectedItem = {catIndex: catIndex, itemIndex: itemIndex, json: $scope.data.analyses[catIndex].items[itemIndex].item};
+				$scope.openEditModal('editTableModal');
+			} else {  // User-added (non-autofill) item
+				$scope.data.selectedItem = {catIndex: catIndex, itemIndex: itemIndex};
+				$scope.openEditModal('editModal');
+			}  // if autofilled
+		}  // if isEditor
+	}  // end editItem
+
+
+
+	// ----------------------------------------
+	// -------- Open Edit Table Modal --------
+	$scope.openEditTableModal = function(whichOne){
+		scope.editTableModalInstance = $uibModal.open({
+			templateUrl: 'editTableModal',
+			ariaLabelledBy: 'modal-title',
+			ariaDescribedBy: 'modal-body',
+			size: 'md',
+			scope: scope
+		});
+	} // end openEditTableModal
+
+
+
+	// ----------------------------------
+	// -------- Open Edit Modal --------
+	$scope.openEditModal = function(whichOne){
+		scope.editModalInstance = $uibModal.open({
+			templateUrl: whichOne,  // 'editModal' or 'editTableModal'
+			ariaLabelledBy: 'modal-title',
+			ariaDescribedBy: 'modal-body',
+			size: 'md',
+			scope: scope
+		});
+	} // end openEditModal
+
+
+
+	// ---------------------------------
+	// -------- Open Add Modal --------
+	$scope.openAddModal = function(category){
+		scope.addModalInstance = $uibModal.open({
+			templateUrl: 'addModal',
+			ariaLabelledBy: 'modal-title',
+			ariaDescribedBy: 'modal-body',
+			size: 'md',
+			scope: scope
+		});   
+	} // end openAddModal
+
+
+
+	// -----------------------------
+	// -------- POST Item --------
+	$scope.postItem = function() {
+		$http({
+			method: 'POST',
+			url: '/api/now/table/x_depar_mit_analysis',
+			headers: {'Content-Type' : 'application/json','Accept': 'application/json'},
+			data : { 'state'       : $scope.data.state,
+							 'category'    : $scope.data.newItem.category,
+							 'sequence'    : $scope.data.newItem.sequence,
+							 'item'        : $scope.data.newItem.item
+						 }
+		})
+		.then(function(response) { // on success
+			//console.log(JSON.stringify(response))
+			$scope.addModalInstance.close();
+			for (var cat in $scope.data.analyses) {
+				if ($scope.data.analyses[cat].category == response.data.result.category) {
+					$scope.data.analyses[cat].items.push(response.data.result);
+					break;
+				}  // end if
+			}  // end for
+			spUtil.addInfoMessage("New Analysis Saved.");
+		},
+					function(response) {
+			console.log('ERROR IS ' + JSON.stringify(response));
+			alert('ERROR saving new analysis item; Please check logs.');
+		});
+	}	// end POST item
+
+
+	// -----------------------------
+	// -------- PATCH Item --------
+	$scope.patchItem = function() {
+		var whatToSave;
+		if ($scope.data.analyses[$scope.data.selectedItem.catIndex].items[$scope.data.selectedItem.itemIndex].isJson) {
+			// If it's JSON, have to stringify it first or it will save with some weird-arse formatting
+			whatToSave = JSON.stringify($scope.data.analyses[$scope.data.selectedItem.catIndex].items[$scope.data.selectedItem.itemIndex].item);
+		} else {  // if not JSON, then just save the text
+			whatToSave = $scope.data.analyses[$scope.data.selectedItem.catIndex].items[$scope.data.selectedItem.itemIndex].item;
+		}  // is it JSON?
+
+		$http({
+			method: 'PATCH',
+			url: '/api/now/table/x_depar_mit_analysis/' + $scope.data.analyses[$scope.data.selectedItem.catIndex].items[$scope.data.selectedItem.itemIndex].sys_id,
+			headers: {'Content-Type' : 'application/json','Accept': 'application/json'},
+			data : { "item"  : whatToSave
+						 }
+		})
+		.then(function(response) { // on success
+			//console.log(response)
+			$scope.editModalInstance.close();
+			spUtil.addInfoMessage("Saved.");
+		},
+		function(response) {
+			console.log('ERROR IS ' + JSON.stringify(response));
+			alert('ERROR updating analysis item; Please check logs.');
+		});
+	}	// end PATCH item
+
+
+
+	// ------------------------------
+	// -------- DELETE Item --------
+	$scope.deleteItem = function() {
+		var confirmation = confirm("Select OK to *DELETE* this analysis item completely.");
+		if (confirmation) {
+			$http({
+				method: 'DELETE',
+				url: '/api/now/table/x_depar_mit_analysis/' + $scope.data.analyses[$scope.data.selectedItem.catIndex].items[$scope.data.selectedItem.itemIndex].sys_id,
+				headers: {'Content-Type' : 'application/json','Accept': 'application/json'}
+			})
+			.then(function(response) { // on success
+				//console.log(response)
+				$scope.editModalInstance.close();
+				$scope.data.analyses[$scope.data.selectedItem.catIndex].items.splice([$scope.data.selectedItem.itemIndex], 1);  // remove from the array in scope
+				spUtil.addInfoMessage("Deleted.");
+			},
+			function(response) {
+				console.log('ERROR IS ' + JSON.stringify(response));
+				alert('ERROR deleting analysis item; Please check logs.');
+			});
+		}  // end confirmation
+	}	// end DELETE item
+
+
+
+	c.print = function(size) {
+		window.print();
+	}
+
+
+
+	//------------------------------------------
+	//-------- Print-Related Functions --------
+	//------------------------------------------
+	
+	c.printDiv = function (divName) {
+		var printContents = document.getElementById(divName).innerHTML;
+
+		var originalContents = document.body.innerHTML;
+
+		//document.body.innerHTML = printContents;
+		//document.getElementById("state_info_table").setAttribute("frame", "void");
+		//var sheet = document.createElement('style')
+		//sheet.innerHTML = "table { font-size: 7pt; } table table {border-collapse: collapse; border-style:hidden;} .pull-right{ display: none; color: blue;} .sidenote.text-right{ float:right;}";
+		//document.body.appendChild(sheet);
+		//window.print();
+		
+		var w = window.open(); 
+		var localCSS = '<link href="76f6d06cdb4f1b00622d7e560f96198b.cssdbx" rel="stylesheet" type="text/css"></link>'
+		var bootstrapcss = '<link href="8917d0cf4f5bc600d9246bd18110c75a.cssdbx" rel="stylesheet" type="text/css"></link>';
+		w.document.write(printContents + bootstrapcss + localCSS);  
+
+		//w.print(); 
+    //w.close();
+		
+		//window.print();
+		//document.body.inerHTML = originalContents;
+	}
+
+
+	c.printDivFrame = function(divId) {
+		var printDivCSS = '<link href="myprintstyle.css" rel="stylesheet" type="text/css">';
+
+		var localCSS = '<link href="1f4e33d0db4f1b00622d7e560f9619bd.cssdbx" rel="stylesheet" type="text/css"></link>';
+		var bootstrapcss = '<link href="8917d0cf4f5bc600d9246bd18110c75a.cssdbx" rel="stylesheet" type="text/css"></link>';
+		var bootstrapcssmin = '<link href="d5aec1a8dbd32200664cfd0d0f96190f.cssdbx" rel="stylesheet" type="text/css"></link>';
+
+		window.frames.print_frame.document.body.innerHTML = localCSS+ bootstrapcss + bootstrapcssmin +document.getElementById(divId).innerHTML;
+		window.frames.print_frame.window.focus();
+		window.frames.print_frame.window.print();
+	}
+
+
+// ---------------------------------
+// -------- First Run Only --------
+
+
+}
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.sidenote {
+  font-size: 0.8em;
+}
+
+img {
+  border: 1px solid lightgrey
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>mit-state-risk-analysis</id>
+        <internal>false</internal>
+        <link/>
+        <name>MIT State Risk Analysis</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[// Returns the JSON, otherwise false
+function tryParseJSON(jsonString) {
+	try {
+		var o = JSON.parse(jsonString);
+		if (o && typeof o === "object") { return o;	}
+	}
+	catch (e) { }
+	return false;
+}  // tryParseJSON
+
+
+(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+	data.analyses   = [];  // has to be an array to specify category order
+	data.errScores  = {};
+	data.states     = [];  // list of available states
+	data.state      = '';  // currently-selected state
+	data.newItem    = {};
+
+	if (input) {
+		//data.analyses   = input.analyses;
+		data.states     = input.states;
+		data.state      = input.state;
+		data.isEditor   = input.isEditor;
+
+		switch (input.action) {
+			case 'refresh':
+				// ------------------------------------
+				// -------- Get State Details --------
+				var grfactschk = new GlideRecord('x_depar_mit_analysis');
+				grfactschk.addQuery('state', data.state);
+				grfactschk.addQuery('category', 'Background');  // *** Specific Category ***
+				grfactschk.addQuery('sequence', -1);
+				grfactschk.query();
+				while (grfactschk.next()) {
+					grfactschk.deleteRecord();
+				}
+
+				var grfacts = new GlideRecord('x_depar_mit_analysis');
+				grfacts.initialize();
+				grfacts.state    = data.state;
+				grfacts.sequence = -1;
+				grfacts.category = 'Background';  // *** Specific Category ***
+				grfacts.item     = JSON.stringify(input.offices);  // fed from $scope.refresh()
+				grfacts.insert();
+
+
+				// ---------------------------------------------------------
+				// -------- Get ERR Info (includes A-133 Analysis) --------
+				var facts = new x_depar_mit.getFactsService();
+				data.errScores = facts.errFactsRetrieval(data.state);
+
+				// --------------------------------------------------------------------
+				// -------- Save it to the Analysis sheet like a regular item --------
+				// --------  Overwrite existing if necessary (sequence = -1)  --------
+				
+				// ######## ERR Data ########
+				var grerrchk = new GlideRecord('x_depar_mit_analysis');
+				grerrchk.addQuery('state', data.state);
+				grerrchk.addQuery('category', 'Pertinent ERR Data Detail');  // *** Specific Category ***
+				grerrchk.addQuery('sequence', -1);
+				grerrchk.query();
+				while (grerrchk.next()) {
+					grerrchk.deleteRecord();
+				}
+
+				var grerr = new GlideRecord('x_depar_mit_analysis');
+				grerr.initialize();
+				grerr.state    = data.state;
+				grerr.sequence = -1;
+				grerr.category = 'Pertinent ERR Data Detail';  // *** Specific Category ***
+				grerr.item     = JSON.stringify({"DUNS"                : data.errScores.duns, 
+																				 "Admin Risk Score"    : data.errScores.admScore,
+																				 "Internal Risk Score" : data.errScores.intScore,
+																				 "Financial Risk Score": data.errScores.finScore });
+				grerr.insert();
+
+
+				// ######## A-133 Data ########
+				var gra133chk = new GlideRecord('x_depar_mit_analysis');
+				gra133chk.addQuery('state', data.state);
+				gra133chk.addQuery('category', 'A-133 Audit Analysis');  // *** Specific Category ***
+				gra133chk.addQuery('sequence', -1);
+				gra133chk.query();
+				while (gra133chk.next()) {
+					gra133chk.deleteRecord();
+				}
+
+				var gra133 = new GlideRecord('x_depar_mit_analysis');
+				gra133.initialize();
+				gra133.state    = data.state;
+				gra133.sequence = -1;
+				gra133.category = 'A-133 Audit Analysis';  // *** Specific Category ***
+				gra133.item     = data.errScores.auditInfo;
+				gra133.insert();
+
+
+				// No BREAK here; keep going to load/refresh the other data
+
+			case 'load_state':
+				data.luDate = new GlideDateTime("2000-01-01 12:00:01");  // initialize last-updated date
+
+				// -------- Get Categories --------
+				// (ensures cats are there even if empty)
+				var grc = new GlideRecord('sys_choice');
+				grc.addQuery('name', 'x_depar_mit_analysis');
+				grc.addQuery('element', 'category');
+				grc.addActiveQuery();
+				grc.orderBy('sequence');
+				grc.query();
+
+				while (grc.next()) {
+					var currcat = grc.label.getDisplayValue();
+					var tempObj = {category  : currcat,
+											   items     : []
+												};
+	
+					// -------- Get Analyses for the given Category--------
+					var gr = new GlideRecordSecure('x_depar_mit_analysis');
+					gr.addQuery('state', data.state.toUpperCase());
+					gr.addQuery('category', currcat)
+					gr.orderBy('sequence');
+					gr.query();
+
+					while(gr.next()) {
+						var tempSubObj = {};
+						tempSubObj.sys_id    = gr.sys_id.getDisplayValue();
+						tempSubObj.item      = gr.getValue('item');
+						tempSubObj.sequence  = gr.getValue('sequence');
+						tempObj.items.push(tempSubObj);
+						
+						// -------- if the item is JSON data, parse it --------
+						var temp = tryParseJSON(tempSubObj.item);
+						if (temp) {
+							tempSubObj.item   = temp;
+							tempSubObj.isJson = true;
+						} else {
+							tempSubObj.isJson = false;
+						}  // if JSON
+
+						// -------- Update the last_updated_dt --------
+						var tempDT = new GlideDateTime(gr.sys_updated_on);  // SN won't compare otherwise
+						if (data.luDate.compareTo(tempDT) == -1) {
+							data.luDate = tempDT;
+						}  // update last_updated_date
+					}  // end analysis while
+
+					data.analyses.push(tempObj);
+				}  // end category while
+
+				data.luDate = data.luDate.getDisplayValue();  // Widget won't pass this field back to client if it's not stringified...
+				break;
+
+			default:
+				console.log('default?')
+
+		}  // end switch
+
+	} else {  // -------- First Run Only --------
+		
+		// -------- Get States --------
+		var grst = new GlideRecord('sys_choice');
+		grst.addQuery('name', 'x_depar_mit_analysis');
+		grst.addQuery('element', 'state');
+		grst.orderBy('sequence');
+		grst.query();
+
+		while (grst.next()) {
+			var tempObj = {};
+			tempObj.name  = grst.label.getDisplayValue();
+			tempObj.value = grst.value.getDisplayValue();
+			data.states.push(tempObj);
+		}  // end while
+		
+		// -------- See if "I" Have Rights to Edit ---------
+		data.isEditor = gs.hasRole('x_depar_mit.analysis_admin');
+
+	}  // end if input
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-05-24 16:27:47</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>1aa64c99db5a1700622d7e560f96199d</sys_id>
+        <sys_mod_count>543</sys_mod_count>
+        <sys_name>MIT State Risk Analysis</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_update_name>sp_widget_1aa64c99db5a1700622d7e560f96199d</sys_update_name>
+        <sys_updated_by>Steve.Vong</sys_updated_by>
+        <sys_updated_on>2018-08-02 22:21:07</sys_updated_on>
+        <template><![CDATA[<div id="everything">
+  <div class="text-center">
+    <h2>State Risk Analysis for <select ng-init="data.state=''" ng-model="data.state" ng-options="st.value as st.name for st in data.states" ng-change="reload()"/> <button class="btn btn-danger" aria-label="Refresh Auto-Load Data" ng-if="data.isEditor && data.state != ''" ng-click="refresh()">Refresh Auto-Load Data</button></h2>
+  </div>
+  <div class="col-sm-12" style="margin-bottom:15px;">
+    <span class="col-sm-8" style="font-size:0.8em;">-- For Internal Use Only - NOT Subject to FOIA --
+    <!--span class="col-sm-8">STATE:&nbsp;
+      <select ng-init="data.state=''" ng-model="data.state" ng-options="st.value as st.name for st in data.states" ng-change="reload()"/>
+		-->
+    </span>
+    <span class="col-sm-4 sidenote text-right" ng-if="data.luDate">Last Updated {{data.luDate | date:'short'}}</span>
+  </div>
+  <div class="col-sm-12">
+    <table class="col-sm-12 table table-bordered" style="border-width: 2px;">
+      <tr ng-repeat="analysis in data.analyses">
+        <td>
+          <span>{{analysis.category}}</span>
+          <span class="pull-right">
+            <button class="btn btn-light" aria-label="Add New Item" ng-if="data.isEditor" ng-click="addItem($index)"><strong>+</strong></button>
+          </span>
+        </td>
+        <td>
+          <ul>
+			      <li ng-repeat="x in analysis.items | orderBy: x.sequence" ng-click="editItem($parent.$index, $index)">
+              <span ng-if="!x.isJson"><span ng-bind-html="x.item"></span></span>
+              <span ng-if="x.isJson">
+                <table class="table table-striped">
+                  <tbody>
+                    <tr ng-repeat="(key,value) in x.item track by key">
+                      <td class="col-sm-4"><b>{{key}}</b> : </td>
+                      <!--td class="col-sm-4 text-right"><b>{{key}}</b> : </td-->
+                      <td class="col-sm-8" ng-if="key == 'Flag'"><img src="{{value}}" alt="flag" height="50"/></td>
+                      <td class="col-sm-8" ng-if="key != 'Flag'">{{value}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </span>
+            </li>
+    			</ul>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+	<script type="text/ng-template" id="editTableModal">
+		<div class="modal-header">
+    	<h3 class="modal-title text-center">Edit Table Item</h3>
+    </div>
+    <div class="modal-body row">
+      <table class="table table-striped">
+        <thead>
+          <!--tr>
+            <th class="col-sm-4">Key</th>
+            <th class="col-sm-8">Value</th>
+          </tr-->
+        </thead>
+        <tbody>
+          <tr ng-repeat="(key,value) in data.analyses[data.selectedItem.catIndex].items[data.selectedItem.itemIndex].item">
+            <td class="col-sm-4"><b>{{key}}</b> : </td>
+            <!--td class="col-sm-4 text-right"><b>{{key}}</b> : </td-->
+            <td class="col-sm-7"><input type="text" ng-model="data.analyses[data.selectedItem.catIndex].items[data.selectedItem.itemIndex].item[key]" size="45"/></td>
+            <td class="col-sm-1"><button class="btn btn-light" aria-label="Remove Table Row" ng-click="removeTableRow(key, $index)">x</button>
+          </tr>
+        </tbody>
+      </table>
+      <div class="col-sm-12">Add Row
+      	<table class="table">
+        	<tr>
+          	<td><input type="text" ng-model="tmpadd_key" size="25%"/></td>
+            <td><input type="text" ng-model="tmpadd_value" size="40%"/><td>
+            <td><button class="btn btn-info" ng-if="tmpadd_key.length>0 && tmpadd_value.length>0" ng-click="addTableRow(tmpadd_key, tmpadd_value)">Add</button></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  	<div class="modal-footer">
+    	<div class="btn-group" role="group" aria-label="Actions">
+	    	<button class="btn btn-primary" ng-click="patchItem()"> Save </button>
+        <button class="btn btn-danger" ng-click="deleteItem()">Delete</button>
+        <button class="btn btn-info" ng-click="editModalInstance.close()">Close</button>
+      </div>
+    </div>
+	</script>
+
+	<script type="text/ng-template" id="editModal">
+		<div class="modal-header">
+    	<h3 class="modal-title text-center">Edit Item</h3>
+    </div>
+    <div class="modal-body row">
+      <div class="col-sm-12" style="margin-top:15px; margin-bottom:5px">Category: <strong>{{data.analyses[data.selectedItem.catIndex].category}}</strong></div>
+      <div class="col-sm-12"><textarea rows="3" cols="90%" ng-model="data.analyses[data.selectedItem.catIndex].items[data.selectedItem.itemIndex].item"/></div>
+    </div>
+  	<div class="modal-footer">
+    	<div class="btn-group" role="group" aria-label="Actions">
+	    	<button class="btn btn-primary" ng-click="patchItem()"> Save </button>
+        <button class="btn btn-danger" ng-click="deleteItem()">Delete</button>
+        <button class="btn btn-info" ng-click="editModalInstance.close()">Close</button>
+      </div>
+    </div>
+	</script>
+
+ 	<script type="text/ng-template" id="addModal">
+		<div class="modal-header">
+    	<h3 class="modal-title text-center">Add Item</h3>
+    </div>
+    <div class="modal-body row">
+      <div class="col-sm-12" style="margin-top:15px; margin-bottom:5px">Category: <strong>{{data.newItem.category}}</strong></div>
+      <div class="col-sm-12"><textarea rows="3" cols="90%" ng-model="data.newItem.item"/></div>
+    </div>
+  	<div class="modal-footer">
+    	<button class="btn btn-primary" ng-click="postItem()">Submit</button>
+      <button class="btn btn-info" ng-click="addModalInstance.close()">Close</button>
+    </div>
+	</script>
+
+</div>
+
+
+<a href="#"   ng-click="c.printDivFrame('everything')" style="display: none;"> 
+  <span class="glyphicon glyphicon-print"></span> Print
+</a>
+
+<a href="#"   ng-click="c.printDiv('everything')"> 
+  <span class="glyphicon glyphicon-print"></span> Print Friendly & PDF
+</a>
+]]></template>
+    </sp_widget>
+</record_update>

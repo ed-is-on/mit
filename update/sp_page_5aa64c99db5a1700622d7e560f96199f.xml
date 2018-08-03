@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_page">
+    <sp_page action="INSERT_OR_UPDATE">
+        <css>@media print {&#13;
+}&#13;
+&#13;
+&#13;
+@media print {     &#13;
+  section.page {&#13;
+    visibility: visible;&#13;
+    page-break-inside: auto !important;&#13;
+    display: block !important;&#13;
+    width: auto !important;&#13;
+    height: auto !important;&#13;
+    overflow: visible !important;   &#13;
+    -webkit-print-color-adjust: exact;&#13;
+  }&#13;
+</css>
+        <id>mit</id>
+        <internal>false</internal>
+        <public>false</public>
+        <roles/>
+        <short_description/>
+        <sys_class_name>sp_page</sys_class_name>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-05-24 16:27:47</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>5aa64c99db5a1700622d7e560f96199f</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>mit</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_update_name>sp_page_5aa64c99db5a1700622d7e560f96199f</sys_update_name>
+        <sys_updated_by>Steve.Vong</sys_updated_by>
+        <sys_updated_on>2018-07-10 20:32:58</sys_updated_on>
+        <title>MIT State Analysis</title>
+    </sp_page>
+</record_update>

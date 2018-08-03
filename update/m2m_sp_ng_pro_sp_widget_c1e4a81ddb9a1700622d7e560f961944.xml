@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="m2m_sp_ng_pro_sp_widget">
+    <m2m_sp_ng_pro_sp_widget action="INSERT_OR_UPDATE">
+        <sp_angular_provider display_value="stateFactsRetrieverService">c6fe3fc5db5a1700622d7e560f96195c</sp_angular_provider>
+        <sp_widget display_value="MIT State Risk Analysis">1aa64c99db5a1700622d7e560f96199d</sp_widget>
+        <sys_class_name>m2m_sp_ng_pro_sp_widget</sys_class_name>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-05-24 18:39:51</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>c1e4a81ddb9a1700622d7e560f961944</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>stateFactsRetrieverService.mit_test</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_update_name>m2m_sp_ng_pro_sp_widget_c1e4a81ddb9a1700622d7e560f961944</sys_update_name>
+        <sys_updated_by>Steve.Vong</sys_updated_by>
+        <sys_updated_on>2018-05-24 18:39:51</sys_updated_on>
+    </m2m_sp_ng_pro_sp_widget>
+</record_update>
