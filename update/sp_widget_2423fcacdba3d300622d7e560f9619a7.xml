@@ -388,7 +388,7 @@ stateFactsRetrieverService.wikiGovQuery($scope.data.states[elementPos].name);
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>phil.feng</sys_created_by>
         <sys_created_on>2018-07-23 15:05:08</sys_created_on>
-        <sys_customer_update>true</sys_customer_update>
+        <sys_customer_update>false</sys_customer_update>
         <sys_id>2423fcacdba3d300622d7e560f9619a7</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>MIT_CORS_PHIL_Test</sys_name>

@@ -391,7 +391,7 @@
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>phil.feng</sys_created_by>
         <sys_created_on>2018-06-25 16:28:38</sys_created_on>
-        <sys_customer_update>true</sys_customer_update>
+        <sys_customer_update>false</sys_customer_update>
         <sys_id>3eb9b82bdb72d700622d7e560f9619ae</sys_id>
         <sys_mod_count>154</sys_mod_count>
         <sys_name>MIT_SRA_Phil_clone</sys_name>

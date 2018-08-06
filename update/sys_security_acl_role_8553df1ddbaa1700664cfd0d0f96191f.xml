@@ -4,7 +4,7 @@
         <sys_class_name>sys_security_acl_role</sys_class_name>
         <sys_created_by>Steve.Vong</sys_created_by>
         <sys_created_on>2018-06-06 17:37:41</sys_created_on>
-        <sys_customer_update>true</sys_customer_update>
+        <sys_customer_update>false</sys_customer_update>
         <sys_id>8553df1ddbaa1700664cfd0d0f96191f</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>x_depar_mit_analysis.x_depar_mit.analysis_admin</sys_name>

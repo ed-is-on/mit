@@ -145,7 +145,7 @@
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>phil.feng</sys_created_by>
         <sys_created_on>2018-06-27 16:52:54</sys_created_on>
-        <sys_customer_update>true</sys_customer_update>
+        <sys_customer_update>false</sys_customer_update>
         <sys_id>6d72d744db071b00622d7e560f96196a</sys_id>
         <sys_mod_count>1</sys_mod_count>
         <sys_name>phil_graph_print_test</sys_name>

@@ -6,7 +6,7 @@
         <sys_class_name>m2m_sp_widget_dependency</sys_class_name>
         <sys_created_by>phil.feng</sys_created_by>
         <sys_created_on>2018-06-27 16:52:54</sys_created_on>
-        <sys_customer_update>true</sys_customer_update>
+        <sys_customer_update>false</sys_customer_update>
         <sys_id>b172d744db071b00622d7e560f96196d</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>HighCharts v5.phil_graph_print_test</sys_name>

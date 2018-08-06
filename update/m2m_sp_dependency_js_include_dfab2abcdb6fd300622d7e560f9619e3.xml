@@ -7,7 +7,7 @@
         <sys_class_name>m2m_sp_dependency_js_include</sys_class_name>
         <sys_created_by>Steve.Vong</sys_created_by>
         <sys_created_on>2018-07-24 18:30:16</sys_created_on>
-        <sys_customer_update>true</sys_customer_update>
+        <sys_customer_update>false</sys_customer_update>
         <sys_id>dfab2abcdb6fd300622d7e560f9619e3</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>wtf_wikipedia.https://unpkg.com/wtf_wikipedia@latest/builds/wtf_wikipedia.min.js</sys_name>

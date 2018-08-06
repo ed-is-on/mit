@@ -505,6 +505,9 @@ function tryParseJSON(jsonString) {
 				console.log('default?')
 
 		}  // end switch
+//console.log('-->')
+//console.log(JSON.stringify(Object.keys(data.analyses[0].items[0].item[0])[0]))
+//console.log('<--')
 
 	} else {  // -------- First Run Only --------
 		
@@ -525,6 +528,7 @@ function tryParseJSON(jsonString) {
 		// -------- See if "I" Have Rights to Edit ---------
 		data.isEditor = gs.hasRole('x_depar_mit.analysis_admin');
 
+
 	}  // end if input
 
 })();]]></script>
@@ -534,7 +538,7 @@ function tryParseJSON(jsonString) {
         <sys_created_on>2018-05-24 16:27:47</sys_created_on>
         <sys_customer_update>true</sys_customer_update>
         <sys_id>1aa64c99db5a1700622d7e560f96199d</sys_id>
-        <sys_mod_count>543</sys_mod_count>
+        <sys_mod_count>582</sys_mod_count>
         <sys_name>MIT State Risk Analysis</sys_name>
         <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
         <sys_policy/>
@@ -542,7 +546,7 @@ function tryParseJSON(jsonString) {
         <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
         <sys_update_name>sp_widget_1aa64c99db5a1700622d7e560f96199d</sys_update_name>
         <sys_updated_by>Steve.Vong</sys_updated_by>
-        <sys_updated_on>2018-08-02 22:21:07</sys_updated_on>
+        <sys_updated_on>2018-08-03 20:08:31</sys_updated_on>
         <template><![CDATA[<div id="everything">
   <div class="text-center">
     <h2>State Risk Analysis for <select ng-init="data.state=''" ng-model="data.state" ng-options="st.value as st.name for st in data.states" ng-change="reload()"/> <button class="btn btn-danger" aria-label="Refresh Auto-Load Data" ng-if="data.isEditor && data.state != ''" ng-click="refresh()">Refresh Auto-Load Data</button></h2>
@@ -571,12 +575,18 @@ function tryParseJSON(jsonString) {
               <span ng-if="x.isJson">
                 <table class="table table-striped">
                   <tbody>
+                    <!-- Commenting out stuff to switch to Array of JSON objects -->
                     <tr ng-repeat="(key,value) in x.item track by key">
                       <td class="col-sm-4"><b>{{key}}</b> : </td>
-                      <!--td class="col-sm-4 text-right"><b>{{key}}</b> : </td-->
                       <td class="col-sm-8" ng-if="key == 'Flag'"><img src="{{value}}" alt="flag" height="50"/></td>
                       <td class="col-sm-8" ng-if="key != 'Flag'">{{value}}</td>
                     </tr>
+                    <!--tr ng-repeat="tableRow in x.item">
+                      <td class="col-sm-4"><b>{{Object.keys(tableRow)}}</b> : </td>
+                      <!--td class="col-sm-4 text-right"><b>{{key}}</b> : </td->
+                      <td class="col-sm-8" ng-if="key == 'Flag'"><img src="{{value}}" alt="flag" height="50"/></td>
+                      <td class="col-sm-8" ng-if="key != 'Flag'">{{value}}</td>
+                    </tr-->
                   </tbody>
                 </table>
               </span>

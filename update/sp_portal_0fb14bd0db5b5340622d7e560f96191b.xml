@@ -19,7 +19,7 @@
         <sys_class_name>sp_portal</sys_class_name>
         <sys_created_by>Steve.Vong</sys_created_by>
         <sys_created_on>2018-07-10 20:34:15</sys_created_on>
-        <sys_customer_update>true</sys_customer_update>
+        <sys_customer_update>false</sys_customer_update>
         <sys_id>0fb14bd0db5b5340622d7e560f96191b</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>MIT</sys_name>

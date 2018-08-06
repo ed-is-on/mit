@@ -7,7 +7,7 @@
         <sys_class_name>sys_scope_privilege</sys_class_name>
         <sys_created_by>paul.bassett</sys_created_by>
         <sys_created_on>2018-06-20 17:55:17</sys_created_on>
-        <sys_customer_update>true</sys_customer_update>
+        <sys_customer_update>false</sys_customer_update>
         <sys_id>579d5f71db361700622d7e560f9619fe</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>x_depar_err_self_s_entity</sys_name>
