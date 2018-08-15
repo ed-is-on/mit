@@ -6,6 +6,8 @@
 
 	// ---------------------------------
 	// -------- Google Version --------
+	
+	// Customer requested to abandon this in favor of Wikipedia
   var googleApiKey = 'AIzaSyBSmSrpn-paoik062x8mkVmZMBQgiGmHQw';  // Using my personal acct for now!!
 
   this.govQuery = function(state) {  // Expects state 2-Letter code in ALL CAPS, e.g., CA
@@ -50,7 +52,7 @@
 
 	this.wikiGovQuery = function(stateName) {  // Expects State Name, e.g., California
 		var deferred = $q.defer();
-		var responseJSON = {};
+		var responseJSON = [];
 		var flagName;
 		var data1, data2, data3;  // Keeping track of the 3 types of formats we are checking
 
@@ -59,13 +61,21 @@
 			case 'District of Columbia':
 				stateName = 'Washington, D.C.';
 				break;
+
+			case 'Georgia':
+				stateName = 'Georgia_(U.S._state)';
+				break;
+
+			case 'New York':
+				stateName = 'New_York_(state)';
+				break;
 				
 			case 'US Virgin Islands':
 				stateName = 'United States Virgin Islands';
 				break;
 
-			case 'Georgia':
-				stateName = 'Georgia_(U.S._state)';
+			case 'Washington':
+				stateName = 'Washington_(state)';
 				break;
 		} // end switch
 
@@ -90,42 +100,88 @@
 				deferred.reject(err);
 			}
 
-			//-------- lots of Wiki pages are not formatted right; try a few --------
-			try {  // Try 1; Most likely to work
-				data1 = doc.infobox(0).data;
-				flagName = data1.flag.data.text;  // use this below
 
-				responseJSON = {
-					'Governor'        : data1.governor.data.text || '',
-					'Lt Governor'     : data1['lieutenant governor'].data.text || '',
-					'Senators'        : data1.senators.data.text, //.replace(/(↵|\\n)/g, ', ') || '',
-					'Representatives' : data1.representative.data.text || '',
-					'Capital'         : data1.capital.data.text || ''
-				}  // responseJSON
+			//-------- lots of Wiki pages are not formatted right; have to try a few different ones --------
+			// The following MESS does this:
+			// - Try doc.infobox(0).data
+			// -- Test Data Pattern 1 that lists each person with their title as the key in a nested JSON
+			// -- Test Data Pattern 2 that lists each person with generic titles
+			// - Try doc.sections(0).templates('us state')[0].data
+			// -- In this format, the data pattern has {title:name} in UNnested JSON
+			// - Try doc.sections(0).templates('u.s. state')[0].data (DAMN YOU SOUTH DAKOTA)
+			// - Try data3 = doc.sections(0).lists()
+			// -- In this format, the data pattern is "title = name"
+			//----------------------------------------------------------------------------------------------
+
+			try {  // Try 1; Most likely to work //-------- Format 1 --------
+				data1 = doc.infobox(0).data;
+				//console.log(data1)
+				if (data1.flag != undefined) { flagName = data1.flag.data.text; }  // use this below
+
+				//responseJSON = {
+				//	'Governor'        : data1.governor.data.text || '',
+				//	'Lt Governor'     : data1['lieutenant governor'].data.text || '',
+				//	'Senators'        : data1.senators.data.text, //.replace(/(↵|\\n)/g, ', ') || '',
+				//	'Representatives' : data1.representative.data.text || '',
+				//	'Capital'         : data1.capital.data.text || ''
+				//}  // responseJSON
+				
+				try {  // Try 1a  //-------- Format 1: Data Pattern 1 --------
+					responseJSON = [
+						{ label: "Governor",        value: data1.governor.data.text || '' },
+						{ label: "Lt Governor",     value: data1['lieutenant governor'].data.text || '' },
+						{ label: "Senators",        value: data1.senators.data.text },
+						{ label: "Representatives", value: data1.representative.data.text || '' },
+						{ label: "Capital",         value: data1.capital.data.text || '' }
+					]
+				} catch (e1) {
+					console.log('Format 1 matched, but no data; trying Data Pattern 2. F1D1 Error: ' + e1)
+
+					//-------- Format 1: Data Pattern 2 --------
+					if (data1.leader_title != undefined && data1.leader_name != undefined) {
+						//responseJSON[data1.leader_title.data.text] = data1.leader_name.data.text;
+						responseJSON.push( {label: data1.leader_title.data.text,  value: data1.leader_name.data.text} );
+					}
+					if (data1.leader_title1 != undefined && data1.leader_title1 != undefined) {
+						//responseJSON[data1.leader_title1.data.text] = data1.leader_name1.data.text;
+						responseJSON.push( {label: data1.leader_title1.data.text,  value: data1.leader_name1.data.text} );
+					}
+					if (data1.leader_title2 != undefined && data1.leader_title2 != undefined) {
+						//responseJSON[data1.leader_title2.data.text] = data1.leader_name2.data.text;
+						responseJSON.push( {label: data1.leader_title2.data.text,  value: data1.leader_name2.data.text} );
+					}
+					if (data1.image_flag != undefined) {
+						flagName = data1.image_flag.data.text;
+					}
+
+					if (responseJSON.length == 0) { throw('Pattern 2 returned no data, trying another format.'); }
+				}  // Try 1a
+
 
 			} catch (e) {  // Catching Try 1
-				console.log('Fell out of Format 1, about to try Format 2: ', e)
+				console.log('Fell out of Format 1, about to try Format 2. F1 Error: ', e)
 
-				try {  // Try 2
-					data2 = doc.infoboxes(0).data;
+				try {  // Try 2  //-------- Format 2 --------
 					
-					if (data2.leader_title && data2.leader_name) {
-						responseJSON[data2.leader_title.data.text] = data2.leader_name.data.text;
-					}
-					if (data2.leader_title1 && data2.leader_title1) {
-						responseJSON[data2.leader_title1.data.text] = data2.leader_name1.data.text;
-					}
-					if (data2.leader_title2 && data2.leader_title2) {
-						responseJSON[data2.leader_title2.data.text] = data2.leader_name2.data.text;
-					}
-					if (data2.image_flag) {
-						flagName = data2.image_flag.data.text;
-					}
+					try {  //-------- Format 2; Pattern 1 -------- Not strictly a diff pattern, but whatever.
+						data2 = doc.sections(0).templates('us state')[0].data;
+					} catch (e2) {
+						console.log('F2 Pattern 1 not matched; Trying Pattern 2. F1P1 Error: ' + e2)
+						data2 = doc.sections(0).templates('u.s. state')[0].data;
+					}  // Try 2a
+
+					responseJSON = [
+						{ label: "Governor",        value: data2.governor || '' },
+						{ label: "Lt Governor",     value: data2['lieutenant governor'] || '' },
+						{ label: "Senators",        value: data2.senators },
+						{ label: "Representatives", value: data2.representative || '' },
+						{ label: "Capital",         value: data2.capital || '' }
+					]
 
 				} catch (ee) {  // Catching Try 2
-					console.log('Fell out of Format 2, about to try Format 3: ', ee)
+					console.log('Fell out of Format 2, about to try Format 3. F2 Error: ', ee)
 
-					try {  // Try 3
+					try {  // Try 3  //-------- Format 3 --------
 						data3 = doc.sections(0).lists();
 
 						for (var level1 in data3) {  // multiple layers of CRAP to dig through...
@@ -135,7 +191,8 @@
 									var matches = data3[level1][level2].data.text.match(/^(.+\S)(\s*\=\s*)(.*)$/);
 
 									if (['Governor', 'Lieutenant Governor', 'Senator', 'Senators', 'Representative', 'Representatives', 'Capital'].includes(matches[1])) {
-										responseJSON[matches[1]] = matches[3];
+										//responseJSON[matches[1]] = matches[3];
+										responseJSON.push( {label: matches[1],  value: matches[3]} )
 									}
 
 									if (matches[1] == 'Flag') {
@@ -146,13 +203,16 @@
 								}  // Catch Match
 							}  // level 2
 						}  // level 1
-						//console.log(responseJSON)
 
+						if (responseJSON.length == 0) { console.log('No Errors, but no data found in Wiki.'); }
 					} catch (eee) {  // Catching Try 3
-						deferred.reject('Failed all attempts to parse Wiki: ' + eee);
+						// Don't reject; just return an error message in the dataset.
+						var emsg = "Failed all attempts to parse Wiki. Error Message: " + eee;
+						deferred.resolve([{label: "_ERROR_", value: emsg}]);
 					}  // Catch 3
 				}  // Catch 2
 			}  // Catch 1
+
 
 			// -------- Now get the Flag --------
 			if (flagName) {
@@ -160,11 +220,16 @@
 				.then(function(res) {
 					res.json()
 					.then(function(s) {
-						var flagUrl = s.query.pages["-1"].imageinfo[0].url;  // May not work for all images
+						try {  // West Virginia wants to be different...
+							var flagUrl = s.query.pages["-1"].imageinfo[0].url;  // May not work for all images
 
-						// Do some basic validation on the flagURL...
-						if (flagUrl.match(/^https:\/\/upload.wikimedia.org\//)) {
-							responseJSON["Flag"] = flagUrl;
+							// Do some basic validation on the flagURL...
+							if (flagUrl.match(/^https:\/\/upload.wikimedia.org\//)) {
+								//responseJSON["Flag"] = flagUrl;
+								responseJSON.push( {label : "Flag",  value : flagUrl} );
+							}
+						} catch (ef) {
+							console.log('Invalid Flag URL: ' + ef)  // ...but continue.
 						}
 
 						deferred.resolve(responseJSON);
@@ -187,9 +252,9 @@
         <sys_class_name>sp_angular_provider</sys_class_name>
         <sys_created_by>Steve.Vong</sys_created_by>
         <sys_created_on>2018-05-24 15:55:11</sys_created_on>
-        <sys_customer_update>false</sys_customer_update>
+        <sys_customer_update>true</sys_customer_update>
         <sys_id>c6fe3fc5db5a1700622d7e560f96195c</sys_id>
-        <sys_mod_count>259</sys_mod_count>
+        <sys_mod_count>339</sys_mod_count>
         <sys_name>stateFactsRetrieverService</sys_name>
         <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
         <sys_policy/>
@@ -197,7 +262,7 @@
         <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
         <sys_update_name>sp_angular_provider_c6fe3fc5db5a1700622d7e560f96195c</sys_update_name>
         <sys_updated_by>Steve.Vong</sys_updated_by>
-        <sys_updated_on>2018-08-02 20:06:23</sys_updated_on>
+        <sys_updated_on>2018-08-08 15:17:36</sys_updated_on>
         <type>service</type>
     </sp_angular_provider>
 </record_update>

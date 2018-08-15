@@ -296,7 +296,7 @@
 		//var localCSS = '<link href="76f6d06cdb4f1b00622d7e560f96198b.cssdbx" rel="stylesheet" type="text/css"></link>'
 		var bootstrapcss = '<link href="8917d0cf4f5bc600d9246bd18110c75a.cssdbx" rel="stylesheet" type="text/css"></link>';
 		var sheet = document.createElement('style');
-		sheet.innerHTML = "table { font-size: 7pt; border-collapse: collapse;} table table {border-collapse: collapse; border-style:hidden;} .pull-right{ display: none; color: blue;} .sidenote.text-right{ float:right;} #refresh-button {display:none} ul { list-style-type: none; padding: 0; margin: 0} @page { margin: 10px;}";
+		sheet.innerHTML = "table { font-size: 7pt; border-collapse: collapse;} table table {border-collapse: collapse; border-style:hidden;} .pull-right{ display: none; color: blue;} .sidenote.text-right{ float:right;} #refresh-button {display:none} ul { list-style-type: none; padding: 0; margin: 0} @page { margin: 0;}";
 
 		w.document.write(printContents + bootstrapcss);  
 		w.document.body.appendChild(sheet);
@@ -328,20 +328,19 @@
   font-size: 0.8em;
 }
 
-img.flag {
+img {
   border: 1px solid lightgrey
-}
-</css>
+}</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
         <docs/>
         <field_list/>
         <has_preview>true</has_preview>
-        <id>mit-state-risk-analysis</id>
+        <id>remove_refreshbutton</id>
         <internal>false</internal>
         <link/>
-        <name>MIT State Risk Analysis</name>
+        <name>remove_refreshbutton</name>
         <option_schema/>
         <public>false</public>
         <roles/>
@@ -373,20 +372,6 @@ function tryParseJSON(jsonString) {
 
 		switch (input.action) {
 			case 'refresh':
-				// ----------------------------------------------
-				// -------- Check for State Shape Image --------
-				var elementPos = data.states.map(function(x) {return x.value; }).indexOf(data.state);  // Get the state name
-				var shapeName = data.states[elementPos].name + '.svg';
-				var grsh = new GlideRecord('db_image');
-				grsh.addQuery('name', shapeName);
-				//grsh.addQuery('sys_scope', '4d538a5cdb9e9300622d7e560f961919');  // "MIT"
-				grsh.query();
-
-				if (grsh.next()) {  // Just looking to see if there is an image; add it in the HTML template
-					input.offices.push({label : "State Outline",  value : shapeName});  // Just adding a placeholder
-				}  // check for state shape image
-
-
 				// ------------------------------------
 				// -------- Get State Details --------
 				if (input.offices.length > 0) {  // Don't do anything if factsService returned nothing (BIE)
@@ -556,19 +541,19 @@ function tryParseJSON(jsonString) {
 })();]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
-        <sys_created_by>Steve.Vong</sys_created_by>
-        <sys_created_on>2018-05-24 16:27:47</sys_created_on>
+        <sys_created_by>phil.feng</sys_created_by>
+        <sys_created_on>2018-08-08 01:49:07</sys_created_on>
         <sys_customer_update>true</sys_customer_update>
-        <sys_id>1aa64c99db5a1700622d7e560f96199d</sys_id>
-        <sys_mod_count>677</sys_mod_count>
-        <sys_name>MIT State Risk Analysis</sys_name>
+        <sys_id>d46694a1db73d700622d7e560f9619dd</sys_id>
+        <sys_mod_count>31</sys_mod_count>
+        <sys_name>remove_refreshbutton</sys_name>
         <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
-        <sys_update_name>sp_widget_1aa64c99db5a1700622d7e560f96199d</sys_update_name>
-        <sys_updated_by>Steve.Vong</sys_updated_by>
-        <sys_updated_on>2018-08-09 18:49:26</sys_updated_on>
+        <sys_update_name>sp_widget_d46694a1db73d700622d7e560f9619dd</sys_update_name>
+        <sys_updated_by>phil.feng</sys_updated_by>
+        <sys_updated_on>2018-08-14 19:52:15</sys_updated_on>
         <template><![CDATA[<div id="everything">
   <div class="text-center">
     <h3>State Risk Analysis for <select ng-init="data.state=''" ng-model="data.state" ng-options="st.value as st.name for st in data.states" ng-change="reload()"/> <button id="refresh-button" class="btn btn-danger" aria-label="Refresh Auto-Load Data" ng-if="data.isEditor && data.state != ''" ng-click="refresh()">Refresh Auto-Load Data</button></h3>
@@ -606,9 +591,8 @@ function tryParseJSON(jsonString) {
                     <tr ng-repeat="tableRow in x.item track by $index">
                       <td class="col-sm-4"><b>{{tableRow.label}}</b> : </td>
                       <!--td class="col-sm-4 text-right"><b>{{tableRow.label}}</b> : </td-->
-											<td class="col-sm-8" ng-if="tableRow.label == 'State Outline'"><img src="{{tableRow.value}}" alt="shape" height="80"/></td>
-                      <td class="col-sm-8" ng-if="tableRow.label == 'Flag'"><img class="flag" src="{{tableRow.value}}" alt="flag" height="50"/></td>
-                      <td class="col-sm-8" ng-if="tableRow.label != 'Flag' && tableRow.label != 'State Outline'">{{tableRow.value}}</td>
+                      <td class="col-sm-8" ng-if="tableRow.label == 'Flag'"><img src="{{tableRow.value}}" alt="flag" height="50"/></td>
+                      <td class="col-sm-8" ng-if="tableRow.label != 'Flag'">{{tableRow.value}}</td>
                     </tr>
                   </tbody>
                 </table>

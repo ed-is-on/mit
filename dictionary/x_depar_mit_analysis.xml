@@ -17,12 +17,15 @@
                 <element label="Alabama" sequence="10" value="AL"/>
                 <element label="Alaska" sequence="20" value="AK"/>
                 <element label="American Samoa" sequence="30" value="AS"/>
+                <element label="Arizona" sequence="35" value="AZ"/>
                 <element label="Arkansas" sequence="40" value="AR"/>
+                <element label="Bureau of Indian Education" sequence="45" value="_BIE_"/>
                 <element label="California" sequence="50" value="CA"/>
                 <element label="Colorado" sequence="60" value="CO"/>
                 <element label="Connecticut" sequence="70" value="CT"/>
                 <element label="Delaware" sequence="80" value="DE"/>
                 <element label="District of Columbia" sequence="90" value="DC"/>
+                <element label="Federated States of Micronesia" sequence="95" value="FM"/>
                 <element label="Florida" sequence="100" value="FL"/>
                 <element label="Georgia" sequence="110" value="GA"/>
                 <element label="Guam" sequence="120" value="GU"/>
@@ -54,8 +57,10 @@
                 <element label="Ohio" sequence="380" value="OH"/>
                 <element label="Oklahoma" sequence="390" value="OK"/>
                 <element label="Oregon" sequence="400" value="OR"/>
+                <element label="Palau" sequence="405" value="PW"/>
                 <element label="Pennsylvania" sequence="410" value="PA"/>
                 <element label="Puerto Rico" sequence="420" value="PR"/>
+                <element label="Republic of the Marshall Islands" sequence="425" value="MH"/>
                 <element label="Rhode Island" sequence="430" value="RI"/>
                 <element label="South Carolina" sequence="440" value="SC"/>
                 <element label="South Dakota" sequence="450" value="SD"/>

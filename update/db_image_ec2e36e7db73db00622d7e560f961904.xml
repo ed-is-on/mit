@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="db_image">
+    <db_image action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>Service Portal</category>
+        <format/>
+        <height/>
+        <image/>
+        <name>District of Columbia.svg</name>
+        <size_bytes>1747</size_bytes>
+        <sys_class_name>db_image</sys_class_name>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 19:10:15</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>ec2e36e7db73db00622d7e560f961904</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>District of Columbia.svg</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_update_name>db_image_ec2e36e7db73db00622d7e560f961904</sys_update_name>
+        <sys_updated_by>Steve.Vong</sys_updated_by>
+        <sys_updated_on>2018-08-14 19:10:22</sys_updated_on>
+        <thumbnail/>
+        <width/>
+    </db_image>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <compressed>true</compressed>
+        <content_type>image/svg+xml</content_type>
+        <file_name>image</file_name>
+        <image_height/>
+        <image_width/>
+        <size_bytes>1747</size_bytes>
+        <size_compressed>900</size_compressed>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 19:10:22</sys_created_on>
+        <sys_id>a73e36e7db73db00622d7e560f961908</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>Steve.Vong</sys_updated_by>
+        <sys_updated_on>2018-08-14 19:10:22</sys_updated_on>
+        <table_name>ZZ_YYdb_image</table_name>
+        <table_sys_id>ec2e36e7db73db00622d7e560f961904</table_sys_id>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="image" sys_id="a73e36e7db73db00622d7e560f961908">a73e36e7db73db00622d7e560f961908</sys_attachment>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 19:10:22</sys_created_on>
+        <sys_id>e73e36e7db73db00622d7e560f961908</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>fVVti9s4EP7cQv/DnPdDr2DJkvzubFq6x7EUclA46HdvosRmFdvYipP0uP9+M4qdZKFcQB5p3p6ZeSTy+OW0NzDqfqjbZulJLjzQzbrd1M1u6R3slmXel88f3j/+xhg860b3pW37Ar5u2hcN34w5DNapQEmO0T78/eMZ/jx1bW/huzns2LcGuFP+uIAUkHAh4OlQmw2ITwCMUf5h3N2XIT2oN0vv+VBv9OABFtkMS6+ytiuC4Hg88mPI234XKCFEgLGTS3EydfP6K0eZ53ngrOi69ER38uB8kR/ev4Ox1senlgwgAJPS8mCwZ6OXnm7KF6PZS7l+3fXtodkUjT7CnefCwRdDV67Rvev1oPtRe64vSgH23KHB6pMN1sNAhnd8sOKfbW1M8SBE8iTVAifZvuriIXe/6ciO9cZWheAynjX72ure1CgKKRb/IkjgUAiu12tL/YWuOxXm1yYcVNM2Got1OXHMCZorXe8qi4fUCygDFQnIaTNs236/9Pal7evT79L1KyHOeByLDFQc8VQI9ektwMMf7reAbdtYti33tTkXH7/rvtP2UH6c9EP9Uxcq7k4L7/NXUw6v5WNAuITflbaCNSqRbxyRB3gN/pIJDsDPQh6thS98FfPYVxGqLjv8oF7ykGUxD3363HaGhTxBY2ZYxGOGm5G5E6ppjUzx1OBiKZdIzEjSCJ6zmEdOT3Y65xiFkU5PwSRxOXvEEp5WmSEItF315IexFa7ZdoG/opM3ZcWF6Ia8qdA3yHQmSYGkT7AtipljXQWYHX1Wt1n9vDD664nGKc/9THG5SnOe+iFFZn4SO2Tlxxckn5Dn+eHyJ8TrmWaAPk46a5Vhp1ifP/UzBTveyFE5sITkICjMd1/nNw3Un9qfwagtQz3SHFaZ9KVMEAwP4zQQnzwoA0WQxALmYbpsNDmCXOVYeiSr6y2Y+HnD58Sf6xETuTPeCZIVTfp+8ndyvNKEB3eRZhrv6ZyBJv4p4epGxkxZa867tnnDWtfWjcVDHuIUZZTwCLIcw2SY8ASyhAoOJVfTVuXkoIgqhVcT8EKkuEVegSaoQvKUFK8EjyGjh3TZYulZSgQqxcMJgx4b5OKa7VJEKNAhjxxyjvn+574lISfepHupwt0A4e6CGIR7oO57u/3udbpnOjFnZkmU0tBuGaeh0f8Ayv8Aw5tgM9MGAAA=</data>
+        <length>1188</length>
+        <position>1</position>
+        <sys_attachment display_value="image" sys_id="a73e36e7db73db00622d7e560f961908">a73e36e7db73db00622d7e560f961908</sys_attachment>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 19:10:22</sys_created_on>
+        <sys_id>6b3e36e7db73db00622d7e560f961908</sys_id>
+    </sys_attachment_doc>
+</record_update>

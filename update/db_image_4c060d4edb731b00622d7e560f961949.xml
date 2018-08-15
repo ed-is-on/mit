@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="db_image">
+    <db_image action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>Service Portal</category>
+        <format/>
+        <height/>
+        <image/>
+        <name>Alabama.svg</name>
+        <size_bytes>1462</size_bytes>
+        <sys_class_name>db_image</sys_class_name>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-09 18:34:20</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>4c060d4edb731b00622d7e560f961949</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>Alabama.svg</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_update_name>db_image_4c060d4edb731b00622d7e560f961949</sys_update_name>
+        <sys_updated_by>Steve.Vong</sys_updated_by>
+        <sys_updated_on>2018-08-14 18:27:45</sys_updated_on>
+        <thumbnail/>
+        <width/>
+    </db_image>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <compressed>true</compressed>
+        <content_type>image/svg+xml</content_type>
+        <file_name>image</file_name>
+        <image_height/>
+        <image_width/>
+        <size_bytes>1462</size_bytes>
+        <size_compressed>857</size_compressed>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 18:27:45</sys_created_on>
+        <sys_id>9774be63db73db00622d7e560f961967</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>Steve.Vong</sys_updated_by>
+        <sys_updated_on>2018-08-14 18:27:45</sys_updated_on>
+        <table_name>ZZ_YYdb_image</table_name>
+        <table_sys_id>4c060d4edb731b00622d7e560f961949</table_sys_id>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="image" sys_id="9774be63db73db00622d7e560f961967">9774be63db73db00622d7e560f961967</sys_attachment>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 18:27:45</sys_created_on>
+        <sys_id>d774be63db73db00622d7e560f961967</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>bVRda9w4FH1Oof9B6zx0C5IsyZa/JtPSlCX0YaGw0HfH1syYeGxjaz6S0v++52qm2wZ2QJF07vU9554rcvfxvO/Z0c1LNw7rSEsVMTc0Y9sN23V08BtRRB8/vH1z94cQ7MENbq79OFfsUzs+Oval7w+LDxAzWuJrzv759sD+Ok/j7NnX/rAVXwYmA/jtQlKxTCrF7g9d3zL1njEhqP5y3P4uQ0cMwoZlHe28n6o4Pp1O8pTIcd7GRikVI/+aUp37bnj6v0RdlmUcokhdR2o6R+z5sr99c8OOnTvdjxRgiqEorYgt/rl368gN9WPvxGPdPG3n8TC01eBO7LfMVaCvlqlukD7NbnHz0UWhFyrB/POEgHdnHzfLQoEbuXj1fdP1vZgPvavc0Q1j266avpteI5RT3SqV3WuzgsPjk6tuy/C7XsWpa/2uUlLbn8i+827uO2yVVqsfEBIHJSRpy7p2HT0cutZdpNzNrvHkShI8MUn5X+uBfBgHhxYDCwaSIbxz3XbnccmjOJSg3hjGPyybcd6vo33t5+78pw42aWYLaa0qmLGpzJUy718z3H4OvxXbjIMXm3rf9c/Vu69unpw/1O+u+NK9uMrY6byKPnzq6+WpvouJl5qKt79aQ+yx3teX3jByxxpk4/3AckxKr6PSSoteNTVQyAKgAZjKFKC5gOba2FT73avvQfB3UUrNdakaoWUmlDQikRlPZSHQHtfSNAAMAgWnZZFkZIqEnAIlBQDkIsMqZCKsLMF10xCe4a6Aa4VDSgctiyZ8n0iN3XKYGe46lZoiOVcoYfEXxbgiyIoyJBlh8C5AakWiZHYRrKlQJlNhUoghjlTLJChIhClROQgpcAANlGiZNgaJKdFgpUQvcrCbnBRySxVTkOdlgFOo0QU80QZOJSXXyON4BWWjZcnRN6dGIKQkV7hRgV1TMi2ew7bgJYkmGCZwyjbXAHlJeBCIUvnlDG8M9W8oGXvGyc+EuIKNmA0QmkBKtS0PoUzawE+jBJKHqRXUGe5BAkzkFqQZDfOXMqGD4+QixsWtyCiRHCD/OcZlyG8aBWaMb8vm8iAsVhpEUwGqRQI+FznpKlLQ4o1l4Vjwn8/tJbzJ61unf3vY/wUMgBrutgUAAA==</data>
+        <length>1132</length>
+        <position>1</position>
+        <sys_attachment display_value="image" sys_id="9774be63db73db00622d7e560f961967">9774be63db73db00622d7e560f961967</sys_attachment>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 18:27:45</sys_created_on>
+        <sys_id>5b74be63db73db00622d7e560f961967</sys_id>
+    </sys_attachment_doc>
+</record_update>

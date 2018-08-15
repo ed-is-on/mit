@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="db_image">
+    <db_image action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>Service Portal</category>
+        <format/>
+        <height/>
+        <image/>
+        <name>American Samoa.svg</name>
+        <size_bytes>6087</size_bytes>
+        <sys_class_name>db_image</sys_class_name>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 18:32:08</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>d765b2e3db73db00622d7e560f961912</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>American Samoa.svg</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_update_name>db_image_d765b2e3db73db00622d7e560f961912</sys_update_name>
+        <sys_updated_by>Steve.Vong</sys_updated_by>
+        <sys_updated_on>2018-08-14 18:32:15</sys_updated_on>
+        <thumbnail/>
+        <width/>
+    </db_image>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <compressed>true</compressed>
+        <content_type>image/svg+xml</content_type>
+        <file_name>image</file_name>
+        <image_height/>
+        <image_width/>
+        <size_bytes>6087</size_bytes>
+        <size_compressed>2365</size_compressed>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 18:32:15</sys_created_on>
+        <sys_id>0585b2e3db73db00622d7e560f961915</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>Steve.Vong</sys_updated_by>
+        <sys_updated_on>2018-08-14 18:32:15</sys_updated_on>
+        <table_name>ZZ_YYdb_image</table_name>
+        <table_sys_id>d765b2e3db73db00622d7e560f961912</table_sys_id>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="image" sys_id="0585b2e3db73db00622d7e560f961915">0585b2e3db73db00622d7e560f961915</sys_attachment>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 18:32:15</sys_created_on>
+        <sys_id>4585b2e3db73db00622d7e560f961915</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>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</data>
+        <length>3140</length>
+        <position>1</position>
+        <sys_attachment display_value="image" sys_id="0585b2e3db73db00622d7e560f961915">0585b2e3db73db00622d7e560f961915</sys_attachment>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 18:32:15</sys_created_on>
+        <sys_id>c585b2e3db73db00622d7e560f961915</sys_id>
+    </sys_attachment_doc>
+</record_update>

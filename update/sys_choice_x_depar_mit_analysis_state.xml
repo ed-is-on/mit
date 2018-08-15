@@ -63,6 +63,25 @@
             <element>state</element>
             <hint/>
             <inactive>false</inactive>
+            <label>Arizona</label>
+            <language>en</language>
+            <name>x_depar_mit_analysis</name>
+            <sequence>35</sequence>
+            <sys_created_by>Steve.Vong</sys_created_by>
+            <sys_created_on>2018-08-08 12:50:23</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>387db29ddbbf9700622d7e560f961926</sys_id>
+            <sys_mod_count>3</sys_mod_count>
+            <sys_updated_by>Steve.Vong</sys_updated_by>
+            <sys_updated_on>2018-08-08 12:50:33</sys_updated_on>
+            <value>AZ</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>state</element>
+            <hint/>
+            <inactive>false</inactive>
             <label>Arkansas</label>
             <language>en</language>
             <name>x_depar_mit_analysis</name>
@@ -76,6 +95,25 @@
             <sys_updated_by>Steve.Vong</sys_updated_by>
             <sys_updated_on>2018-06-06 18:55:23</sys_updated_on>
             <value>AR</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Bureau of Indian Education</label>
+            <language>en</language>
+            <name>x_depar_mit_analysis</name>
+            <sequence>45</sequence>
+            <sys_created_by>Steve.Vong</sys_created_by>
+            <sys_created_on>2018-08-07 19:17:52</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>e85c3a5ddbbf9700622d7e560f961987</sys_id>
+            <sys_mod_count>2</sys_mod_count>
+            <sys_updated_by>Steve.Vong</sys_updated_by>
+            <sys_updated_on>2018-08-07 19:18:08</sys_updated_on>
+            <value>_BIE_</value>
         </sys_choice>
         <sys_choice action="INSERT_OR_UPDATE">
             <dependent_value/>
@@ -171,6 +209,25 @@
             <sys_updated_by>Steve.Vong</sys_updated_by>
             <sys_updated_on>2018-06-06 19:13:03</sys_updated_on>
             <value>DC</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Federated States of Micronesia</label>
+            <language>en</language>
+            <name>x_depar_mit_analysis</name>
+            <sequence>95</sequence>
+            <sys_created_by>Steve.Vong</sys_created_by>
+            <sys_created_on>2018-08-07 19:20:16</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>b7ec7e5ddbbf9700622d7e560f961973</sys_id>
+            <sys_mod_count>3</sys_mod_count>
+            <sys_updated_by>Steve.Vong</sys_updated_by>
+            <sys_updated_on>2018-08-07 19:20:29</sys_updated_on>
+            <value>FM</value>
         </sys_choice>
         <sys_choice action="INSERT_OR_UPDATE">
             <dependent_value/>
@@ -766,6 +823,25 @@
             <element>state</element>
             <hint/>
             <inactive>false</inactive>
+            <label>Palau</label>
+            <language>en</language>
+            <name>x_depar_mit_analysis</name>
+            <sequence>405</sequence>
+            <sys_created_by>Steve.Vong</sys_created_by>
+            <sys_created_on>2018-08-07 19:14:57</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>226bb25ddbbf9700622d7e560f961930</sys_id>
+            <sys_mod_count>3</sys_mod_count>
+            <sys_updated_by>Steve.Vong</sys_updated_by>
+            <sys_updated_on>2018-08-07 19:15:09</sys_updated_on>
+            <value>PW</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>state</element>
+            <hint/>
+            <inactive>false</inactive>
             <label>Pennsylvania</label>
             <language>en</language>
             <name>x_depar_mit_analysis</name>
@@ -798,6 +874,25 @@
             <sys_updated_by>Steve.Vong</sys_updated_by>
             <sys_updated_on>2018-06-06 19:22:17</sys_updated_on>
             <value>PR</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Republic of the Marshall Islands</label>
+            <language>en</language>
+            <name>x_depar_mit_analysis</name>
+            <sequence>425</sequence>
+            <sys_created_by>Steve.Vong</sys_created_by>
+            <sys_created_on>2018-08-07 19:15:38</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>662cb25ddbbf9700622d7e560f961931</sys_id>
+            <sys_mod_count>5</sys_mod_count>
+            <sys_updated_by>Steve.Vong</sys_updated_by>
+            <sys_updated_on>2018-08-08 00:05:31</sys_updated_on>
+            <value>MH</value>
         </sys_choice>
         <sys_choice action="INSERT_OR_UPDATE">
             <dependent_value/>
@@ -1054,7 +1149,7 @@
             <sys_created_on>2018-06-06 18:53:30</sys_created_on>
             <sys_customer_update>false</sys_customer_update>
             <sys_id>0178684ddbf39700622d7e560f96192d</sys_id>
-            <sys_mod_count>175</sys_mod_count>
+            <sys_mod_count>196</sys_mod_count>
             <sys_name>state</sys_name>
             <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
             <sys_policy/>
@@ -1062,7 +1157,7 @@
             <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
             <sys_update_name>sys_choice_x_depar_mit_analysis_state</sys_update_name>
             <sys_updated_by>Steve.Vong</sys_updated_by>
-            <sys_updated_on>2018-06-06 19:25:42</sys_updated_on>
+            <sys_updated_on>2018-08-08 12:50:34</sys_updated_on>
         </sys_choice_set>
     </sys_choice>
 </record_update>

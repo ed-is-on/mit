@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="db_image">
+    <db_image action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>Service Portal</category>
+        <format/>
+        <height/>
+        <image/>
+        <name>Northern Mariana Islands.svg</name>
+        <size_bytes>3690</size_bytes>
+        <sys_class_name>db_image</sys_class_name>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 18:35:09</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>3b16f6e3db73db00622d7e560f961958</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>Northern Mariana Islands.svg</sys_name>
+        <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
+        <sys_update_name>db_image_3b16f6e3db73db00622d7e560f961958</sys_update_name>
+        <sys_updated_by>Steve.Vong</sys_updated_by>
+        <sys_updated_on>2018-08-14 18:35:15</sys_updated_on>
+        <thumbnail/>
+        <width/>
+    </db_image>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <compressed>true</compressed>
+        <content_type>image/svg+xml</content_type>
+        <file_name>image</file_name>
+        <image_height/>
+        <image_width/>
+        <size_bytes>3690</size_bytes>
+        <size_compressed>1438</size_compressed>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 18:35:15</sys_created_on>
+        <sys_id>0d3676e3db73db00622d7e560f9619c5</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>Steve.Vong</sys_updated_by>
+        <sys_updated_on>2018-08-14 18:35:15</sys_updated_on>
+        <table_name>ZZ_YYdb_image</table_name>
+        <table_sys_id>3b16f6e3db73db00622d7e560f961958</table_sys_id>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="image" sys_id="0d3676e3db73db00622d7e560f9619c5">0d3676e3db73db00622d7e560f9619c5</sys_attachment>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 18:35:15</sys_created_on>
+        <sys_id>4d3676e3db73db00622d7e560f9619c5</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>rVfbbts4EH1Ogf4DV33oFiBlkro7cYs2WBQFskCBAnl3ZcUWykiGKcdOF/vvOxdKcYBddx/SwhqKGs6cmTkcMlcfjvdOPDQ73/bdIjKxjkTT1f2q7daLaD/cqTL68P71q6vflBKfm67ZLYd+NxcfV/33Rnxxbu8HmhLWxLBaim+3n8Ufx22/G8RXt1+rL52IafKWncxFHmstPu1btxL6nRBKoX3/sD6FYSLRrhbR5327anwkAGTnF9FmGLbz2exwOMSHJO5365nVWs9gbVCZH13b/fg3RVNV1Yy+guoi0ttjJB5Zvn51IR7a5vCpxw9CCzCKv0j44dE1i6jplt9do74v6x/rXb/vVvOuOYgTzUtyP/fbZQ3q213jm91DE1FcaEIMj1v4MDTHYVZ7jx8uYj/ov+5a5+ZvtM4/GXv5N6jPSB8X7pp6QKQJ4bRJNcGhRV3fNeD20K6GDSQsh8+bpl1vBngpohlaQHcCqtP5u353v4jul8OuPf5uCLkRWRlnmS6FzdK40Nq+e+7gzTX9uxR3fTeou+V96x7nb782u20z7Jdvw7xvfzZzm22Pl9H7j27pfyyvZugX/a8xzKvtctiIGj5B/SDkSEBZ/zSmio00eRLbWunYwM8qG2cgy1E6ZWDSOHrGqdNxATKB9xI+o8wkSnyBQVZrqaWBUU7PDJxf1BqtS4uq/HToi3U1mqNnynrKKnRCT6fYHw3QYYFrSAtWBRnWSU0QLfoGadhznEr8ZnjFKD1HS4hRsh68FfSspIYZS2PKwigdo8hvTVpwpIhJYnJABo82ZMBKQuPRAcZAQVYeMpsQ+iCdSgggDCxlyWKwOS7GGcCMokDB0eRYE4RUUlYklkVh2BYBhDnHuiHHFHlBmLjUOEVebJwGSaqUntN0kbqVY74M5DZY42jDl0oyIVBWPCvJDD+dJRuVs5xzoE2FOAkdzTEvYlMHb5JtTdLzOMVox1BRN6ArFROR5M0JsX/SLvyvDaAp9QUxzVDOcx4AAkxkxnXhmRQHCCDn0uOYSwwhK8aCGEtmEP3KU05QhtJReuZfIYMMdZGG/3uqsaS6niQlDeqURh+Iko3Sm5AhQ9BT9O6RZwlWnqUPGeRM0t6xgaI5UbSox1hAI6SFpEfecT+A8j3jRqinCiwIUZuw73OqTpC8pwN7C2Q48htivTkpx/myWSB4kuO2BcAZrIV1EFoCsqiZSLlMiKbJKB02NIvkGFdPPnr3uO67Z262fdsN8GJ0jpm0RZwIo3FUgaScJJrm6HsCccG4wp3HY0Pcp3UX5ylIi0xZm4AaC1ONkvosNYAMc3wzqf8v8CZFZU1ATY4WETqMC9xU03wqqypOf4HTJICu0gQJDIW+UilmUsb9PHQHZgKzKa+5gVKX01xppMc1WqxkyfGMxk+Gv9i5KfjJcti43FKqAIi3Ap8aJlCQaKew01k8XqCZwAMqqMJShqPBXoZFm0yfDM+CqTA0W55LjX+WEn+ajG/TcjmNzrorsGImI3d09oR2xL3Qcsi1HrsNHg0Ktio6THG7gnNoOtdgBtKdgspk8Gl0FkBeAeeBWi/AhOu8ou1byNHoNPiJV8KLMzBKamp4HnLJsxMKUB9W3DqT8J4G93ju8FHKhwZ1deZkic3Covpk/Gl0NidlhoxCDrwcGOxsYDKRk/Gn0XkwuMjiBeIlwHybzMlpdH5zAqty5BKyjg6IhKtNO7Dko5RvBHyfC61Z4e0z95YxS1LFIw4/VqN0lg6jcrx+UI/nS1iJZOT7KF896HJE0vHd5OYJ2vkdXVDqw6lM1AbWpsRdeD4ggI2lX3LzpHy+KHi7M5Xl4BFZssF4XTic+UKZUUGMzFHWJhyhBV9TZUkXU46Qe1kxygdFd6KbJzeM5mq2pif8eQbyH0Spd8lqDgAA</data>
+        <length>1904</length>
+        <position>1</position>
+        <sys_attachment display_value="image" sys_id="0d3676e3db73db00622d7e560f9619c5">0d3676e3db73db00622d7e560f9619c5</sys_attachment>
+        <sys_created_by>Steve.Vong</sys_created_by>
+        <sys_created_on>2018-08-14 18:35:15</sys_created_on>
+        <sys_id>cd3676e3db73db00622d7e560f9619c5</sys_id>
+    </sys_attachment_doc>
+</record_update>
