@@ -8,7 +8,7 @@
 	// -------- Google Version --------
 	
 	// Customer requested to abandon this in favor of Wikipedia
-  var googleApiKey = 'AIzaSyBSmSrpn-paoik062x8mkVmZMBQgiGmHQw';  // Using my personal acct for now!!
+  var googleApiKey = 'xxx';  // Using my personal acct for now!!
 
   this.govQuery = function(state) {  // Expects state 2-Letter code in ALL CAPS, e.g., CA
 	  var deferred = $q.defer();
@@ -254,7 +254,7 @@
         <sys_created_on>2018-05-24 15:55:11</sys_created_on>
         <sys_customer_update>true</sys_customer_update>
         <sys_id>c6fe3fc5db5a1700622d7e560f96195c</sys_id>
-        <sys_mod_count>339</sys_mod_count>
+        <sys_mod_count>340</sys_mod_count>
         <sys_name>stateFactsRetrieverService</sys_name>
         <sys_package display_value="MIT" source="x_depar_mit">4d538a5cdb9e9300622d7e560f961919</sys_package>
         <sys_policy/>
@@ -262,7 +262,7 @@
         <sys_scope display_value="MIT">4d538a5cdb9e9300622d7e560f961919</sys_scope>
         <sys_update_name>sp_angular_provider_c6fe3fc5db5a1700622d7e560f96195c</sys_update_name>
         <sys_updated_by>Steve.Vong</sys_updated_by>
-        <sys_updated_on>2018-08-08 15:17:36</sys_updated_on>
+        <sys_updated_on>2018-08-15 19:15:36</sys_updated_on>
         <type>service</type>
     </sp_angular_provider>
 </record_update>
